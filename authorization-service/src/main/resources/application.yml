@@ -1,6 +1,13 @@
+# server properties
 server:
   port: 8081
+
+# Secret Key To Generate Token
+app:
+  secretKey: '[@q2Xg7@T4mOplFu#Ae]'
+  jwtValidityMinutes: 15
   
+# spring properties
 spring:
   application:
     name: AUTH-SERVICE  
@@ -15,3 +22,10 @@ spring:
     hibernate:
       ddl-auto: create 
     show-sql: false    
+    
+# Error Messages
+jwtUtil:
+  expiredMessage: Token has been expired
+  malformedMessage: Token is in invalid format
+userDetails:
+  errorMessage: User Does Not Exist!    

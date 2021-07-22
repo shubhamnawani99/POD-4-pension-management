@@ -1,4 +1,4 @@
-package com.cognizant.authorization.config;
+package com.cts.authorization.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

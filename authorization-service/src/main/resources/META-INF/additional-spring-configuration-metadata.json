@@ -1,0 +1,27 @@
+{"properties": [
+  {
+    "name": "app.secret-key",
+    "type": "java.lang.String",
+    "description": "A description for 'app.secret-key'"
+  },
+  {
+    "name": "jwtUtil.expired-message",
+    "type": "java.lang.String",
+    "description": "A description for 'jwtUtil.expired-message'"
+  },
+  {
+    "name": "jwtUtil.malformedMessage",
+    "type": "java.lang.String",
+    "description": "A description for 'jwtUtil.malformedMessage'"
+  },
+  {
+    "name": "userDetails.error-message",
+    "type": "java.lang.String",
+    "description": "A description for 'userDetails.error-message'"
+  },
+  {
+    "name": "app.jwtValidityMinutes",
+    "type": "java.lang.String",
+    "description": "A description for 'app.jwtValidityMinutes'"
+  }
+]}

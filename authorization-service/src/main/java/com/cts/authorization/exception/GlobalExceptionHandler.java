@@ -30,4 +30,18 @@ public class GlobalExceptionHandler {
 		ErrorResponse response = new ErrorResponse(invalidCredentialsException.getMessage(), LocalDateTime.now());
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
+
+	/**
+	 * Handles the proper length of user-name
+	 * 
+	 * @param invalidUsernameException
+	 * @return Response Entity of type error Response
+	 */
+	@ExceptionHandler(InvalidUsernameException.class)
+	public ResponseEntity<ErrorResponse> handlesUserInvalidException(
+			InvalidUsernameException invalidUsernameException) {
+
+		ErrorResponse response = new ErrorResponse(invalidUsernameException.getMessage(), LocalDateTime.now());
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
 }
