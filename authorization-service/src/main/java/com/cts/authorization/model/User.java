@@ -19,7 +19,7 @@ import lombok.Data;
 public class User {
 	@Id
 	private String username;
-	@Column
+	@Column(nullable = false)
 	private String password;
 	@Column
 	private String role;

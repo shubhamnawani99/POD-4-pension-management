@@ -1,7 +1,6 @@
 package com.cts.authorization.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
@@ -15,11 +14,10 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RestController
 @Slf4j
-@RequestMapping(value = "auth")
 public class AuthorizationController {
 
 	/**
-	 * @URL: http://localhost:8081/auth/statusCheck
+	 * @URL: http://localhost:8081/statusCheck
 	 * @return "OK" if the server and controller is up and running
 	 */
 	@GetMapping(value = "/statusCheck")
