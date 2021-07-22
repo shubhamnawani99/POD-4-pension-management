@@ -30,19 +30,21 @@ public class UserServiceImpl implements UserDetailsService {
 	 * @param username
 	 * @return Optional<User> Object
 	 */
-	private Optional<User> findByUsername(String username) {
+	public Optional<User> findByUsername(String username) {
 		return userRepository.findById(username);
 	}
 
 	/**
-	 * Loads user from the database if it exists
+	 * Loads user from the database if it exists.
+	 * After loading the details, compares the given username from username in the DB.
 	 * 
+	 * @param username
 	 * @return UserDetails
 	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) {
 		Optional<User> userOptional = findByUsername(username);
-		if (userOptional.isEmpty()) {
+		if (userOptional.isEmpty() || !userOptional.get().getUsername().equals(username)) {
 			throw new InvalidCredentialsException(USER_DOES_NOT_EXIST_MESSAGE);
 		} else {
 			log.info("Username: {} is valid", username);

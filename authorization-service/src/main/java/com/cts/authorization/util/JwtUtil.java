@@ -87,7 +87,7 @@ public class JwtUtil {
 	public boolean isTokenExpiredOrInvalidFormat(String token) {
 		try {
 			getClaims(token);
-		} catch (ExpiredJwtException e) {
+		} catch (ExpiredJwtException e) {	// caught first cause it has higher precedence
 			log.info(EXPIRED_MESSAGE);
 			return true;
 		} catch (MalformedJwtException e) {
