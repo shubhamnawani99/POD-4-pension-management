@@ -30,21 +30,21 @@ class UserRepositoryTests {
 	@Test
 	@DisplayName("This method is responsible to test findById() method when user exists in database")
 	void testFindUserById_userExists() {
-		log.info("testFindUserById_userExists() START");
+		log.info("START - testFindUserById_userExists()");
 		final String username = "admin1";
 		Optional<User> userOptional = userRepository.findById(username);
 		assertTrue(userOptional.isPresent());
 		assertEquals(username, userOptional.get().getUsername());
-		log.info("testFindUserById_userExists() END");
+		log.info("END - testFindUserById_userExists()");
 	}
 
 	@Test
 	@DisplayName("This method is responsible to test findById() method when user doesn not exists in database")
 	void testFindUserById_userDoesNotExists() {
-		log.info("testFindUserById_userDoesNotExists() START");
+		log.info("START - testFindUserById_userDoesNotExists()");
 		final String id = "adminDoesNotExist";
 		Optional<User> userOptional = userRepository.findById(id);
 		assertTrue(userOptional.isEmpty());
-		log.info("testFindUserById_userDoesNotExists() END");
+		log.info("END - testFindUserById_userDoesNotExists()");
 	}
 }

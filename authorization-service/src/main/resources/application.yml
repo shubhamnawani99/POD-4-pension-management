@@ -5,7 +5,7 @@ server:
 # Secret Key To Generate Token
 app:
   secretKey: '[@q2Xg7@T4mOplFu#Ae]'
-  jwtValidityMinutes: 15
+  jwtValidityMinutes: 1
   
 # spring properties
 spring:

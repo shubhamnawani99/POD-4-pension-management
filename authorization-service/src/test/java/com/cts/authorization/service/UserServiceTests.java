@@ -19,7 +19,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.cts.authorization.exception.InvalidCredentialsException;
-import com.cts.authorization.exception.InvalidUsernameException;
 import com.cts.authorization.model.User;
 import com.cts.authorization.repository.UserRepository;
 
@@ -94,6 +93,7 @@ class UserServiceTests {
 		log.info("END - testLoadUserByUsername_invalidUsername()");
 	}
 
+	//  Class to avoid User conflict
 	@MockBean
 	public class SecurityUser extends org.springframework.security.core.userdetails.User {
 
