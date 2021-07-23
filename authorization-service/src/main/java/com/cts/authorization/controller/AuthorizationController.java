@@ -37,14 +37,13 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthorizationController {
 
 	@Autowired
-	AuthenticationManager authenticationManager;
+	private AuthenticationManager authenticationManager;
 
 	@Autowired
-	JwtUtil jwtUtil;
+	private JwtUtil jwtUtil;
 	
 	@Autowired
-	UserDetailsService userService;
-	
+	private UserDetailsService userService;
 
 	/**
 	 * @URL: http://localhost:8081/login
@@ -68,16 +67,6 @@ public class AuthorizationController {
 	}
 
 	/**
-	 * @URL: http://localhost:8081/statusCheck
-	 * @return "OK" if the server and controller is up and running
-	 */
-	@GetMapping(value = "/statusCheck")
-	public String statusCheck() {
-		log.info("OK");
-		return "OK";
-	}
-
-	/**
 	 * Checks if the token is a valid administrator token
 	 * 
 	 * @URL: http://localhost:8081/validate
@@ -95,11 +84,20 @@ public class AuthorizationController {
 			if (user.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN")))
 				return new ResponseEntity<>(true, HttpStatus.OK);
 			else {
-				return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+				return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
 			}
 		} else {
-			return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+			return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
 		}
 	}
 
+	/**
+	 * @URL: http://localhost:8081/statusCheck
+	 * @return "OK" if the server and controller is up and running
+	 */
+	@GetMapping(value = "/statusCheck")
+	public String statusCheck() {
+		log.info("OK");
+		return "OK";
+	}
 }

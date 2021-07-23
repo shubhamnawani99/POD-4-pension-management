@@ -14,6 +14,12 @@ import com.cts.authorization.util.JwtUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Test cases for JWT Utils class
+ * 
+ * @author Shubham Nawani
+ *
+ */
 @SpringBootTest
 @Slf4j
 class JWTUtilTests {
@@ -59,7 +65,7 @@ class JWTUtilTests {
 
 		log.info("END - testIsTokenExpiredOrInvalidFormat_validToken()");
 	}
-	
+
 	@Test
 	@DisplayName("This method is responsible to test isTokenExpiredOrInvalidFormat() for Token with Invalid Format")
 	void testIsTokenExpiredOrInvalidFormat_invalidFormatToken() {
@@ -77,23 +83,23 @@ class JWTUtilTests {
 
 		log.info("END - testIsTokenExpiredOrInvalidFormat_invalidFormatToken()");
 	}
-	
+
 	@Test
-	@DisplayName("This method is responsible to test testGetUsernameFromToken()")
+	@DisplayName("This method is responsible to test GetUsernameFromToken()")
 	void testGetUsernameFromToken() {
 		log.info("START - testGetUsernameFromToken()");
 
 		// Set the username
 		final String username = "admin1";
-		
+
 		// Generate the token
 		String token = jwtUtil.generateToken(username);
 		log.info("Token: {}", token);
 
 		// Username should be equal
 		assertEquals(username, jwtUtil.getUsernameFromToken(token));
-		
+
 		log.info("END - testGetUsernameFromToken()");
 	}
-	
+
 }

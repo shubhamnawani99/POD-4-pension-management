@@ -24,6 +24,12 @@ import com.cts.authorization.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Test cases for user service
+ * 
+ * @author Shubham Nawani
+ *
+ */
 @SpringBootTest
 @Slf4j
 class UserServiceTests {
@@ -93,7 +99,7 @@ class UserServiceTests {
 		log.info("END - testLoadUserByUsername_invalidUsername()");
 	}
 
-	//  Class to avoid User conflict
+	// Class to avoid User conflict
 	@MockBean
 	public class SecurityUser extends org.springframework.security.core.userdetails.User {
 
