@@ -93,6 +93,7 @@ class UserServiceTests {
 		// checking condition
 		InvalidCredentialsException thrownException = assertThrows(InvalidCredentialsException.class,
 				() -> userServiceImpl.loadUserByUsername(id));
+		
 		assertTrue(thrownException.getMessage().contains("User does not exist"));
 		assertNotNull(securityUser);
 

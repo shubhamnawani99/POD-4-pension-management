@@ -10,6 +10,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -41,7 +42,7 @@ public class AuthorizationController {
 
 	@Autowired
 	private JwtUtil jwtUtil;
-	
+
 	@Autowired
 	private UserDetailsService userService;
 
@@ -56,9 +57,13 @@ public class AuthorizationController {
 	 */
 	@PostMapping("/login")
 	public ResponseEntity<String> login(@RequestBody @Valid UserRequest userRequest) {
+		log.info("START - login()");
 		try {
-			authenticationManager.authenticate(
+			Authentication authenticate = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(userRequest.getUsername(), userRequest.getPassword()));
+			if (authenticate.isAuthenticated()) {
+				log.info("Valid User detected - logged in");
+			}
 		} catch (BadCredentialsException | DisabledException | LockedException e) {
 			throw new InvalidCredentialsException(e.getMessage());
 		}

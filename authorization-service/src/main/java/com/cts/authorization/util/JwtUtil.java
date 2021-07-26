@@ -7,8 +7,6 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.cts.authorization.exception.InvalidUsernameException;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -44,16 +42,6 @@ public class JwtUtil {
 				.signWith(SignatureAlgorithm.HS256, Base64.getEncoder().encode(secretKey.getBytes())).compact();
 	}
 
-	/**
-	 * Validate a token by checking expiry and validating username
-	 * 
-	 * @param token    JWT
-	 * @param username
-	 * @return Boolean representing whether token is valid
-	 */
-	public boolean validateToken(String token, String username) {
-		return !isTokenExpiredOrInvalidFormat(token) && validUsername(username, token);
-	}
 
 	/**
 	 * Gets username from the token
@@ -97,16 +85,4 @@ public class JwtUtil {
 		return false;
 	}
 
-	/**
-	 * 
-	 * @param username
-	 * @param token
-	 * @return boolean whether user name is valid or not
-	 */
-	public boolean validUsername(String username, String token) {
-		if (username.equals(getUsernameFromToken(token))) {
-			return true;
-		}
-		throw new InvalidUsernameException("Incorrect Username");
-	}
 }
