@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
@@ -15,8 +15,7 @@ import lombok.NoArgsConstructor;
  * @author Shubham Nawani
  *
  */
-
-@Getter
+@Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

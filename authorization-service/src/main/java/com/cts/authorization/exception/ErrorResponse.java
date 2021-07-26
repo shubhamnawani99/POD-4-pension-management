@@ -3,7 +3,7 @@ package com.cts.authorization.exception;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
 /**
  * Class for sending a custom error response in exception handler
@@ -12,7 +12,7 @@ import lombok.Getter;
  *
  */
 @AllArgsConstructor
-@Getter
+@Data
 public class ErrorResponse {
 
 	private String message;

@@ -27,7 +27,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-		ErrorResponse response = new ErrorResponse("Invalid Input", LocalDateTime.now());
+		ErrorResponse response = new ErrorResponse("Invalid Credentials", LocalDateTime.now());
 
 		return new ResponseEntity<>(response, headers, status);
 	}
@@ -47,4 +47,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 
+	/**
+	 * Handles the proper length of user-name
+	 * 
+	 * @param invalidUsernameException
+	 * @return Response Entity of type error Response
+	 */
+	@ExceptionHandler(InvalidUsernameException.class)
+	public ResponseEntity<ErrorResponse> handlesUserInvalidException(
+			InvalidUsernameException invalidUsernameException) {
+
+		ErrorResponse response = new ErrorResponse(invalidUsernameException.getMessage(), LocalDateTime.now());
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
 }
