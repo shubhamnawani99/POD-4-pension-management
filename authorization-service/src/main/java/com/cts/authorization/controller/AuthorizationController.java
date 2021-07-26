@@ -10,9 +10,11 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RestController
 @Slf4j
+@CrossOrigin("*")
 public class AuthorizationController {
 
 	@Autowired
@@ -41,7 +44,7 @@ public class AuthorizationController {
 
 	@Autowired
 	private JwtUtil jwtUtil;
-	
+
 	@Autowired
 	private UserDetailsService userService;
 
@@ -56,13 +59,18 @@ public class AuthorizationController {
 	 */
 	@PostMapping("/login")
 	public ResponseEntity<String> login(@RequestBody @Valid UserRequest userRequest) {
+		log.info("START - login()");
 		try {
-			authenticationManager.authenticate(
+			Authentication authenticate = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(userRequest.getUsername(), userRequest.getPassword()));
+			if (authenticate.isAuthenticated()) {
+				log.info("Valid User detected - logged in");
+			}
 		} catch (BadCredentialsException | DisabledException | LockedException e) {
 			throw new InvalidCredentialsException(e.getMessage());
 		}
 		String token = jwtUtil.generateToken(userRequest.getUsername());
+		log.info("END - login()");
 		return new ResponseEntity<>(token, HttpStatus.OK);
 	}
 
@@ -78,12 +86,13 @@ public class AuthorizationController {
 	 */
 	@GetMapping("/validate")
 	public ResponseEntity<Boolean> validateAdmin(@RequestHeader(name = "Authorization") String token) {
-
+		log.info("START - validateAdmin()");
 		if (!jwtUtil.isTokenExpiredOrInvalidFormat(token)) {
 			UserDetails user = userService.loadUserByUsername(jwtUtil.getUsernameFromToken(token));
-			if (user.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN")))
+			if (user.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+				log.info("END - validateAdmin()");
 				return new ResponseEntity<>(true, HttpStatus.OK);
-			else {
+			} else {
 				return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
 			}
 		} else {

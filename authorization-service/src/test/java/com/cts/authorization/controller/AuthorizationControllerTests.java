@@ -1,12 +1,17 @@
 package com.cts.authorization.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Collection;
 import java.util.Collections;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,10 +20,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
+import com.cts.authorization.model.UserRequest;
 import com.cts.authorization.service.UserServiceImpl;
 import com.cts.authorization.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,19 +46,22 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 class AuthorizationControllerTests {
 
-	@MockBean
-	private UserServiceImpl userServiceImpl;
-
 	@Autowired
 	private MockMvc mockMvc;
 
 	@MockBean
+	private UserServiceImpl userServiceImpl;
+
+	@MockBean
 	private JwtUtil jwtUtil;
-	
+
+	@MockBean
+	private AuthenticationManager authenticationManager;
+
 	private static ObjectMapper mapper = new ObjectMapper();
 	private static SecurityUser validUser;
 	private static SecurityUser invalidUser;
-	
+
 	@BeforeEach
 	void generateUserCredentials() {
 		// User object
@@ -56,7 +70,99 @@ class AuthorizationControllerTests {
 		invalidUser = new SecurityUser("admin1", "$2a$10$aMMcsBB18R7dqzC7Wcg3z.oiVQnNhgFGD0WMTZVeVtFCMMnru25AO",
 				Collections.singletonList(new SimpleGrantedAuthority("USER")));
 	}
+
+	/*****************************************************************
+	 * User Login Tests
+	 * 
+	 * @throws Exception
+	 * 
+	 *****************************************************************
+	 */
+	@Test
+	@DisplayName("This method is responsible to test login() method with valid credentials")
+	void testLogin_withValidCredentials() throws Exception {
+		log.info("START - testLogin_withValidCredentials()");
+
+		// Set the user request
+		UserRequest user = new UserRequest("admin1", "adminpass@1234");
+
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MjcwMzk2NzcsInN1YiI6ImFkbWluMSIsImV4cCI6MTY1ODU3NTY3N30.trkCUngtLG8C1W6obvcGvQhCK1J9qg2Hsbcn8GJB95Y";
+		log.info("Token: {}", token);
+
+		// mock certain functionalities to return a valid user and generate the token
+		when(authenticationManager.authenticate(ArgumentMatchers.any()))
+				.thenReturn(new TestingAuthenticationToken("admin1", "adminpass@1234", "ADMIN"));
+		when(jwtUtil.generateToken(ArgumentMatchers.any())).thenReturn(token);
+
+		String json = mapper.writeValueAsString(user);
+		log.info("Input data {}", json);
+
+		MvcResult result = mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("UTF-8").content(json).accept(MediaType.TEXT_PLAIN)).andExpect(status().isOk())
+				.andReturn();
+
+		String contentAsString = result.getResponse().getContentAsString();
+
+		assertNotNull(contentAsString);
+		// match the token from the response body
+		assertEquals(contentAsString, token);
+
+		log.info("END - testLogin_withValidCredentials()");
+	}
+
+	@Test
+	@DisplayName("This method is responsible to test login() method with Global Input Errors")
+	void testLogin_withGlobalExceptions() throws Exception {
+		log.info("START - testLogin_withGlobalExceptions()");
+		UserRequest user = new UserRequest("1", "adminpass@1234");
+
+		final String errorMessage = "Invalid Input";
+				
+		String json = mapper.writeValueAsString(user);
+		log.info("Input data {}", json);
+
+		mockMvc.perform(post("/login")
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("UTF-8").content(json)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andExpect(jsonPath("$.message", Matchers.equalTo(errorMessage)));
+		
+		log.info("END - testLogin_withGlobalExceptions()");
+	}
+
+	@Test
+	@DisplayName("This method is responsible to test login() method with invalid credentials")
+	void testLogin_withInvalidCredentials() throws Exception {
+		log.info("START - testLogin_withInvalidCredentials()");
+
+		// Set the user request and role
+		UserRequest user = new UserRequest("admin404", "adminpass@1234");
+		final String errorMessage = "User does not exist";
+		
+		// mock certain functionalities to return a valid user and generate the token
+		when(authenticationManager.authenticate(ArgumentMatchers.any())).thenThrow(new BadCredentialsException(errorMessage));
+		
+		String json = mapper.writeValueAsString(user);
+		log.info("Input data {}", json);
+
+		mockMvc.perform(post("/login")
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("UTF-8").content(json)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andExpect(jsonPath("$.message", Matchers.equalTo(errorMessage)));
+
+		log.info("END - testLogin_withInvalidCredentials()");
+	}
 	
+	/*****************************************************************
+	 * Token Validation Tests
+	 * 
+	 * @throws Exception
+	 * 
+	 *****************************************************************
+	 */
 	@Test
 	@DisplayName("This method is responsible to test validateAdmin() method with valid token")
 	void testValidateAdmin_withValidTokenAndRole() throws Exception {
@@ -65,18 +171,14 @@ class AuthorizationControllerTests {
 		// mock certain functionalities to load user and have a valid token
 		when(userServiceImpl.loadUserByUsername(ArgumentMatchers.any())).thenReturn(validUser);
 		when(jwtUtil.isTokenExpiredOrInvalidFormat(ArgumentMatchers.any())).thenReturn(false);
-		
+
 		// set the token
 		String token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MjcwMzk2NzcsInN1YiI6ImFkbWluMSIsImV4cCI6MTY1ODU3NTY3N30.trkCUngtLG8C1W6obvcGvQhCK1J9qg2Hsbcn8GJB95Y";
 		log.info("Token: {}", token);
-		
+
 		// perform the mock
-		mockMvc.perform(
-					get("/validate")
-					.header(HttpHeaders.AUTHORIZATION, token)
-				)
-				.andExpect(status().isOk());
-		
+		mockMvc.perform(get("/validate").header(HttpHeaders.AUTHORIZATION, token)).andExpect(status().isOk());
+
 		log.info("END - testValidateAdmin_withValidTokenAndRole()");
 	}
 
@@ -88,18 +190,14 @@ class AuthorizationControllerTests {
 		// mock certain functionalities to load user and have a invalid token
 		when(userServiceImpl.loadUserByUsername(ArgumentMatchers.any())).thenReturn(validUser);
 		when(jwtUtil.isTokenExpiredOrInvalidFormat(ArgumentMatchers.any())).thenReturn(true);
-		
+
 		// set the invalid token
 		String token = "Bearer fyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MjcwMzk2NzcsInN1YiI6ImFkbWluMSIsImV4cCI6MTY1ODU3NTY3N30.trkCUngtLG8C1W6obvcGvQhCK1J9qg2Hsbcn8GJB95Y";
 		log.info("Token: {}", token);
-		
+
 		// perform the mock
-		mockMvc.perform(
-					get("/validate")
-					.header(HttpHeaders.AUTHORIZATION, token)
-				)
-				.andExpect(status().isBadRequest());
-		
+		mockMvc.perform(get("/validate").header(HttpHeaders.AUTHORIZATION, token)).andExpect(status().isBadRequest());
+
 		log.info("END - testValidate_withInvalidToken()");
 	}
 
@@ -111,19 +209,33 @@ class AuthorizationControllerTests {
 		// mock certain functionalities to load invalid user and have a valid token
 		when(userServiceImpl.loadUserByUsername(ArgumentMatchers.any())).thenReturn(invalidUser);
 		when(jwtUtil.isTokenExpiredOrInvalidFormat(ArgumentMatchers.any())).thenReturn(false);
-		
+
 		// set the invalid token
 		String token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MjcwMzk2NzcsInN1YiI6ImFkbWluMSIsImV4cCI6MTY1ODU3NTY3N30.trkCUngtLG8C1W6obvcGvQhCK1J9qg2Hsbcn8GJB95Y";
 		log.info("Token: {}", token);
-		
+
 		// perform the mock
-		mockMvc.perform(
-					get("/validate")
-					.header(HttpHeaders.AUTHORIZATION, token)
-				)
-				.andExpect(status().isUnauthorized());
-		
+		mockMvc.perform(get("/validate").header(HttpHeaders.AUTHORIZATION, token)).andExpect(status().isUnauthorized());
+
 		log.info("END - testValidate_withInvalidRole()");
+	}
+
+	
+	@Test
+	@DisplayName("Test method to check for status check")
+	void testStatusCheck() throws Exception {
+		log.info("START - testStatusCheck()");
+
+		MvcResult result = mockMvc.perform(get("/statusCheck"))
+				.andExpect(status().is2xxSuccessful())
+				.andReturn();
+		
+		String contentAsString = result.getResponse().getContentAsString();
+		
+		assertEquals("OK", contentAsString);
+		assertNotNull(result);
+		
+		log.info("END - testStatusCheck()");
 	}
 	
 	// Class to avoid User conflict
@@ -136,4 +248,5 @@ class AuthorizationControllerTests {
 		}
 
 	}
+
 }
