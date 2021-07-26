@@ -1,16 +1,16 @@
-package com.cts.disbursepension.model;
+package com.cts.processPension.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
+@AllArgsConstructor
+@ToString
 public class PensionerDetail {
 	private String name;
 	private Date dateOfBirth;
@@ -18,5 +18,7 @@ public class PensionerDetail {
 	private double salary;
 	private double allowance;
 	private String pensionType;
-	private BankDetails bank;
+	private Bank bank;
+
+
 }

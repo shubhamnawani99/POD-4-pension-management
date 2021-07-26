@@ -13,11 +13,27 @@ import com.cts.pensionerDetails.Exception.NotFoundException;
 import com.cts.pensionerDetails.Model.PensionerDetails;
 import com.cts.pensionerDetails.Service.PensionerdetailService;
 
+
+/**
+ * @author SREEKANTH GANTELA
+ * 
+ * Pensioner Details Controller is to get the details of pensioner 
+ * by passing the Aadhaar Number
+ *
+ */
 @RestController
 public class PensionerDetailsController {
 	
 	@Autowired
 	private PensionerdetailService pds;
+	
+	/**
+	 * @URL: http://localhost:8083/pensionerDetailByAadhaar/123456789012
+	 * 
+	 * @return if Aadhaar Number then return the pensioner details else throws Exception\
+	 * 
+	 *
+	 */
 	
 	@GetMapping("/pensionerDetailByAadhaar/{aadhaarNumber}")
 	public PensionerDetails getPensionerDetailByAadhaar(@PathVariable long aadhaarNumber ) throws NotFoundException {

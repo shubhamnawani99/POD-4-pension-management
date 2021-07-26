@@ -14,7 +14,6 @@ import lombok.ToString;
  * Pension Type, Bank Details.
  *
  *In lombok is used to generate no arugument, all arguments constructors 
- *entity and columns.
  *
  */
 
