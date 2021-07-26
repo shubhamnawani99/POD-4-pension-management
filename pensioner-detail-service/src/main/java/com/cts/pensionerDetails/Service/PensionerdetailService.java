@@ -15,15 +15,31 @@ import com.cts.pensionerDetails.Model.PensionerDetails;
 import com.cts.pensionerDetails.Util.DateUtil;
 
 import lombok.extern.slf4j.Slf4j;
+
+
+/**
+ * @author SREEKANTH GANTELA
+ * 
+ * Pensiondetails Service is a class which contain
+ * the getPensionerDetailByAadhaarNumber function to get the pensioner details
+ * 
+ */
 @Service
 @Slf4j
 public class PensionerdetailService {
 	
 	private Map<Long, PensionerDetails> pensionerDetails;
 	
-
+	/**
+	 * Loads pensioner from the details  if it exists.
+	 * After loading the details, compares the given Aadhaar Number from  the Detials CSV Files.
+	 * 
+	 * @param Aadhaar Number
+	 * @return Pensioner Details
+	 */
 	public PensionerDetails getPensionerDetailByAadhaarNumber(long aadhaarNumber)
 			throws IOException, NotFoundException, NumberFormatException, ParseException {
+		
 		String line = "";
 		pensionerDetails = new HashMap<>();
 		BufferedReader br = new BufferedReader(
@@ -43,7 +59,7 @@ public class PensionerdetailService {
 			return pensionerDetails.get(aadhaarNumber);
 		} else {
 			log.info("throws exception");
-			throw new NotFoundException("AadharNumber Not Found");
+			throw new NotFoundException("Aadhar Number Not Found");
 		}
 	}
 
