@@ -47,4 +47,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 
+	/**
+	 * Handles invalid token exceptions
+	 * 
+	 * @param invalidCredentialsException
+	 * @return Response Entity of custom type Error Response with error message and
+	 *         time-stamp
+	 */
+	@ExceptionHandler(InvalidTokenException.class)
+	public ResponseEntity<ErrorResponse> handlesTokenInvalidException(InvalidTokenException invalidTokenException) {
+
+		ErrorResponse response = new ErrorResponse(invalidTokenException.getMessage(), LocalDateTime.now());
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
 }

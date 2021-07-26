@@ -28,10 +28,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import com.cts.authorization.exception.GlobalExceptionHandler;
-import com.cts.authorization.exception.InvalidCredentialsException;
+import com.cts.authorization.exception.InvalidTokenException;
 import com.cts.authorization.model.UserRequest;
 import com.cts.authorization.service.UserServiceImpl;
 import com.cts.authorization.util.JwtUtil;
@@ -189,10 +187,11 @@ class AuthorizationControllerTests {
 	@DisplayName("This method is responsible to test validateAdmin() method with invalid/expired token")
 	void testValidate_withInvalidToken() throws Exception {
 		log.info("START - testValidate_withInvalidToken()");
+		final String errorMessage = "Token has been expired";
 
 		// mock certain functionalities to load user and have a invalid token
 		when(userServiceImpl.loadUserByUsername(ArgumentMatchers.any())).thenReturn(validUser);
-		when(jwtUtil.isTokenExpiredOrInvalidFormat(ArgumentMatchers.any())).thenReturn(true);
+		when(jwtUtil.isTokenExpiredOrInvalidFormat(ArgumentMatchers.any())).thenThrow(new InvalidTokenException(errorMessage));
 
 		// set the invalid token
 		String token = "Bearer fyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MjcwMzk2NzcsInN1YiI6ImFkbWluMSIsImV4cCI6MTY1ODU3NTY3N30.trkCUngtLG8C1W6obvcGvQhCK1J9qg2Hsbcn8GJB95Y";

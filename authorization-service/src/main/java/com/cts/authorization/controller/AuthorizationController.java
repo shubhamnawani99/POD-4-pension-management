@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RestController
 @Slf4j
+@CrossOrigin
 public class AuthorizationController {
 
 	@Autowired
@@ -68,6 +70,7 @@ public class AuthorizationController {
 			throw new InvalidCredentialsException(e.getMessage());
 		}
 		String token = jwtUtil.generateToken(userRequest.getUsername());
+		log.info("END - login()");
 		return new ResponseEntity<>(token, HttpStatus.OK);
 	}
 
@@ -83,17 +86,21 @@ public class AuthorizationController {
 	 */
 	@GetMapping("/validate")
 	public ResponseEntity<Boolean> validateAdmin(@RequestHeader(name = "Authorization") String token) {
+		log.info("START - validateAdmin()");
 
-		if (!jwtUtil.isTokenExpiredOrInvalidFormat(token)) {
-			UserDetails user = userService.loadUserByUsername(jwtUtil.getUsernameFromToken(token));
-			if (user.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN")))
-				return new ResponseEntity<>(true, HttpStatus.OK);
-			else {
-				return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
-			}
-		} else {
-			return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+		// throws custom exception and response if token is invalid
+		jwtUtil.isTokenExpiredOrInvalidFormat(token);
+
+		// else the user is loaded and role is checked, if role is valid, access is
+		// granted
+		UserDetails user = userService.loadUserByUsername(jwtUtil.getUsernameFromToken(token));
+		if (user.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+			log.info("END - validateAdmin()");
+			return new ResponseEntity<>(true, HttpStatus.OK);
 		}
+
+		return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
+
 	}
 
 	/**

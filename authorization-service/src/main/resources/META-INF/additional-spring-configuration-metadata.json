@@ -23,5 +23,20 @@
     "name": "app.jwtValidityMinutes",
     "type": "java.lang.String",
     "description": "A description for 'app.jwtValidityMinutes'"
+  },
+  {
+    "name": "jwtUtil.signatureMessage",
+    "type": "java.lang.String",
+    "description": "A description for 'jwtUtil.signatureMessage'"
+  },
+  {
+    "name": "jwtUtil.nullOrEmptyMessage",
+    "type": "java.lang.String",
+    "description": "A description for 'jwtUtil.nullOrEmptyMessage'"
+  },
+  {
+    "name": "jwtUtil.unsupportedMessage",
+    "type": "java.lang.String",
+    "description": "A description for 'jwtUtil.unsupportedMessage'"
   }
 ]}
