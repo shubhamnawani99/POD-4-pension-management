@@ -1,5 +1,6 @@
 package com.cts.disbursepension.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -38,9 +39,15 @@ class DisbursePensionServiceTests {
 
 	@BeforeEach()
 	void generatePensionerDetails() {
-		pensionerDetail = PensionerDetail.builder().name("Jon Lanister").pensionType("self").salary(154689.0)
-				.bank(new BankDetails("HDFC", 101, "public")).allowance(15000.8)
-				.dateOfBirth(new Date(System.currentTimeMillis())).pan("AZTYK3456").build();
+		
+		pensionerDetail = new PensionerDetail();
+		pensionerDetail.setName("Jon Lanister");
+		pensionerDetail.setAllowance(15000.8);
+		pensionerDetail.setBank(new BankDetails("HDFC", 101, "public"));
+		pensionerDetail.setDateOfBirth(new Date(System.currentTimeMillis()));
+		pensionerDetail.setPan("AZTYK3456");
+		pensionerDetail.setPensionType("self");
+		pensionerDetail.setSalary(154689.0);
 	}
 
 	@Test
@@ -60,8 +67,12 @@ class DisbursePensionServiceTests {
 		when(pensionerDetailsClient.pensionerDetailByAadhaar(ArgumentMatchers.anyString())).thenReturn(pensionerDetail);
 
 		// testing getPensionDetail output for given aadhaarNumber
-		assertEquals(101, disbursePensionService.getPensionerDetail("456178956325").getBank().getAccountNumber());
-		assertEquals("HDFC", disbursePensionService.getPensionerDetail("456178956325").getBank().getBankName());
+		PensionerDetail receivedPensionerDetails = disbursePensionService.getPensionerDetail("456178956325"); 
+		assertEquals(101, receivedPensionerDetails.getBank().getAccountNumber());
+		assertEquals("HDFC", receivedPensionerDetails.getBank().getBankName());
+		assertEquals("Jon Lanister", receivedPensionerDetails.getName());
+		assertThat(receivedPensionerDetails.getDateOfBirth().before(new Date(System.currentTimeMillis())));
+		assertEquals("AZTYK3456", receivedPensionerDetails.getPan());
 
 	}
 
@@ -70,8 +81,14 @@ class DisbursePensionServiceTests {
 	void testVerifyPensionAmount() {
 
 		// testing verify pension amount
+		//having self pensionType
 		assertTrue(disbursePensionService.verifyPensionAmount(pensionerDetail, 138752.0));
 		assertFalse(disbursePensionService.verifyPensionAmount(pensionerDetail, 134000.0));
+		
+		//having family pensionType
+		pensionerDetail.setPensionType("family");
+		assertTrue(disbursePensionService.verifyPensionAmount(pensionerDetail, 92345.3));
+		assertFalse(disbursePensionService.verifyPensionAmount(pensionerDetail, 1023546.0));
 
 	}
 
@@ -91,14 +108,12 @@ class DisbursePensionServiceTests {
 	@Test
 	@DisplayName("Testing verifyPension method of Disburse Pension Service")
 	void testVerifyPension() {
-		ProcessPensionInput processPensionInput = ProcessPensionInput.builder().aadhaarNumber("456178956325")
-				.bankServiceCharge(500).pensionAmount(138725).build();
-
+		ProcessPensionInput processPensionInput = new ProcessPensionInput("456178956325",138752,500);
 		// mock pensioner detail microservice response
 		when(pensionerDetailsClient.pensionerDetailByAadhaar(ArgumentMatchers.anyString())).thenReturn(pensionerDetail);
 
 		// testing valid pension details
-		assertEquals(21, disbursePensionService.verifyPension(processPensionInput).getProcessPensionStatusCode());
+		assertEquals(10, disbursePensionService.verifyPension(processPensionInput).getProcessPensionStatusCode());
 
 		// testing for invalid pension details
 		processPensionInput.setBankServiceCharge(550);

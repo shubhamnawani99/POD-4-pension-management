@@ -2,13 +2,12 @@ package com.cts.disbursepension.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
-@NoArgsConstructor
-@Data
-@Builder
+@Getter
 public class BankDetails {
 	private String bankName;
 	private long accountNumber;

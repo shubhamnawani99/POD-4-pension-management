@@ -3,13 +3,14 @@ package com.cts.disbursepension.model;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Builder
+@Getter
+@Setter
 public class ProcessPensionInput {
 	@ApiModelProperty(value = "Aadhaar Number")
 	private String aadhaarNumber;

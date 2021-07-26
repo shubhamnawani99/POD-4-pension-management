@@ -21,6 +21,8 @@ class BankChargesRepositoryTests {
 	@DisplayName("Testing Bank Charges Repository by verifying bank charges for various bank type")
 	void testFindByBankType() {
 		assertEquals(500.0,bankChargesRepository.findByBankType("public").get(0).getCharges());
+		assertEquals(1,bankChargesRepository.findByBankType("public").get(0).getId());
+		assertEquals("public",bankChargesRepository.findByBankType("public").get(0).getBankType());
 		assertEquals(550.0,bankChargesRepository.findByBankType("private").get(0).getCharges());
 	}
 
