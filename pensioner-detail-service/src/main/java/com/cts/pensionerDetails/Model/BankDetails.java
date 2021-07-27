@@ -2,8 +2,6 @@ package com.cts.pensionerDetails.Model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 /**
  * @author Sreekanth Gantela
@@ -12,9 +10,7 @@ import lombok.ToString;
  *
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class BankDetails {
 	
 	private String bankName;

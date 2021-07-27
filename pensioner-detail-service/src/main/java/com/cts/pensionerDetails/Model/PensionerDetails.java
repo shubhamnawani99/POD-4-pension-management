@@ -4,8 +4,7 @@ import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author Sreekant Gantela
@@ -13,14 +12,11 @@ import lombok.ToString;
  * of pensioner details like Name, Date of Birth, PAN, Salary, Allowance
  * Pension Type, Bank Details.
  *
- *In lombok is used to generate no arugument, all arguments constructors 
+ *In lombok is used to generate setters, getters and all arguments constructors 
  *
  */
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class PensionerDetails {
 	
 	private String name;
