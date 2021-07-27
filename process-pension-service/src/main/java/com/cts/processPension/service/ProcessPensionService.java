@@ -29,7 +29,7 @@ public class ProcessPensionService {
 
 		// get the pensioner details from the detail micro-service
 		PensionerDetail pensionerDetail = pensionerDetailClient
-				.getPensionerDetailByAadhaar(pensionerInput.getAadharNumber());
+				.getPensionerDetailByAadhaar(pensionerInput.getAadhaarNumber());
 
 		log.info("Details found by details microservice");
 
@@ -49,7 +49,7 @@ public class ProcessPensionService {
 	 * @param Verified Pensioner Details
 	 * @return Pension Details with Pension amount
 	 */
-	private PensionDetail calculatePensionAmount(PensionerDetail pensionDetail) {
+	public PensionDetail calculatePensionAmount(PensionerDetail pensionDetail) {
 		double pensionAmount = 0;
 		if (pensionDetail.getPensionType().equalsIgnoreCase("self"))
 			pensionAmount = (pensionDetail.getSalary() * 0.8 + pensionDetail.getAllowance());

@@ -3,14 +3,10 @@ package com.cts.processPension.model;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Getter;
 
-@Data
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
-@ToString
 public class PensionerDetail {
 	private String name;
 	private Date dateOfBirth;
@@ -19,6 +15,4 @@ public class PensionerDetail {
 	private double allowance;
 	private String pensionType;
 	private Bank bank;
-
-
 }

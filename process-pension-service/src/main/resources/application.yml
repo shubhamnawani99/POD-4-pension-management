@@ -17,14 +17,3 @@ spring:
     hibernate:
       ddl-auto: update 
     show-sql: false    
-    
-# Error Messages
-jwtUtil:
-  expiredMessage: Token has been expired
-  malformedMessage: Token is in invalid format
-  signatureMessage: Token signature is invalid
-  nullOrEmptyMessage: Token is either null or empty
-  unsupportedMessage: Claims for token is not supported
-  
-userDetails:
-  errorMessage: User Does Not Exist!    

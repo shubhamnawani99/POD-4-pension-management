@@ -5,16 +5,10 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Getter;
 
 @AllArgsConstructor
-@NoArgsConstructor
-@Data
-@EqualsAndHashCode
-@ToString
+@Getter
 public class PensionDetail {
 
 	private String name;

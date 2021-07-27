@@ -1,12 +1,11 @@
 package com.cts.processPension.controller;
 
-import java.io.IOException;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cts.processPension.client.AuthorisationClient;
 import com.cts.processPension.client.PensionDisbursementClient;
 import com.cts.processPension.exception.InvalidTokenException;
-import com.cts.processPension.exception.NotFoundException;
 import com.cts.processPension.model.PensionDetail;
 import com.cts.processPension.model.PensionerInput;
 import com.cts.processPension.model.ProcessPensionInput;
@@ -26,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
+@CrossOrigin
 public class ProcessPensionController {
 
 	@Autowired
@@ -39,7 +38,7 @@ public class ProcessPensionController {
 
 	/**
 	 * @URL: http://localhost:8082/pensionerInput
-	 * @Input: { "aadharNumber": "123456789012", "dateOfBirth": "1956-09-12",
+	 * @Input: { "aadhaarNumber": "123456789012", "dateOfBirth": "1956-09-12",
 	 *         "name": "Achyuth", "pan": "BHMER12436", "pensionType": "self" }
 	 * @param pensionerInput
 	 * @return

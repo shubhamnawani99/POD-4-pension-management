@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "/home" },
   { path: "login", component: LoginComponent},
   { path: "home", component: HomeComponent },
-  { path: "process-pension", component: ProcessPensionComponent, canActivate: [AuthGuardService] },
+  { path: "process-pension", component: ProcessPensionComponent},//, canActivate: [AuthGuardService] },
   { path: '**', component: PageNotFoundComponent },
 ];
 

@@ -17,7 +17,7 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/login`, user, { responseType: 'text' })
   }
 
-  // utility to check if the user is still logged in 
+  // utility to check if the user is still logged in
   isLoggedIn() {
     return this.isUserLoggedIn;
   }

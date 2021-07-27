@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
           // if login was successful
           data => {
             this.msg = "User is logged in";
-            this.color = "text-info";            
+            this.color = "text-info";
             this.authService.setSession(data);
             this.router.navigateByUrl("home");
           },
