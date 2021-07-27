@@ -1,18 +1,18 @@
 package com.cts.processPension.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@NoArgsConstructor
 @AllArgsConstructor
-@Data
-@EqualsAndHashCode
+@NoArgsConstructor
+@Getter
+@Setter
 public class ProcessPensionResponse {
-
-	private int pensionStatusCode;
-
 	
+	@ApiModelProperty(value = "Status code after processing pension. 10 for success and 21 for failure")
+	private int processPensionStatusCode;
 
 }

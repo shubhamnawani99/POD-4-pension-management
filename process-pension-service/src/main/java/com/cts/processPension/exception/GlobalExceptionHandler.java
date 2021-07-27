@@ -1,4 +1,8 @@
-package com.cts.disbursepension.exception;
+package com.cts.processPension.exception;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,13 +23,26 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/**
-	 * This method handles data with invalid arguments
+	 * Handles input validation errors
 	 */
 	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		log.debug("Handling Argument not valid exception");
-		return new ResponseEntity<>(new ErrorResponse("Invalid Input"), status);
+
+		log.info(ex.toString());
+		ErrorResponse response = new ErrorResponse();
+		response.setMessage("Invalid Credentials");
+		response.setTimestamp(LocalDateTime.now());
+
+		// Get all validation errors
+		List<String> errors = ex.getBindingResult().getFieldErrors().stream().map(x -> {
+			return x.getField() + ": " + x.getDefaultMessage();
+		}).collect(Collectors.toList());
+
+		// Add errors to the response map
+		response.setFieldErrors(errors);
+
+		return new ResponseEntity<>(response, headers, status);
 	}
 
 	/**
@@ -44,6 +61,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	/**
+	 * This method will handle NotFoundException
+	 * @param exception
+	 * @param response
+	 * @return ErrorResponse
+	 */
+	@ExceptionHandler(NotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException exception,
+			HttpServletResponse response) {
+		log.debug("Handling Aadhaar Number not found exception");
+		ErrorResponse errorResponse = new ErrorResponse();
+		errorResponse.setMessage(exception.getMessage());
+		errorResponse.setTimestamp(LocalDateTime.now());
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+	}
+	/**
 	 * This method will handle InvalidTokenException
 	 * @param exception
 	 * @param response
@@ -53,7 +85,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleInvalidTokenException(InvalidTokenException exception,
 			HttpServletResponse response) {
 		log.debug("Handling Invalid Token exception");
-		return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.FORBIDDEN);
+		ErrorResponse errorResponse = new ErrorResponse();
+		errorResponse.setMessage(exception.getMessage());
+		errorResponse.setTimestamp(LocalDateTime.now());
+		return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
 	}
 
 }

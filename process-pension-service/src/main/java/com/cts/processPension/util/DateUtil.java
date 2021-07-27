@@ -8,7 +8,7 @@ public class DateUtil {
 
 	public static Date parseDate(String date) throws ParseException {
 
-		return new SimpleDateFormat("dd-MM-yyyy").parse(date);
+		return new SimpleDateFormat("yyyy-MM-dd").parse(date);
 
 	}
 

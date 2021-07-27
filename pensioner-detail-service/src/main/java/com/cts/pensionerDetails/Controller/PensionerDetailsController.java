@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cts.pensionerDetails.Model.PensionerDetails;
 import com.cts.pensionerDetails.Service.PensionerDetailService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author SREEKANTH GANTELA
  * 
@@ -16,6 +18,7 @@ import com.cts.pensionerDetails.Service.PensionerDetailService;
  *
  */
 @RestController
+@Slf4j
 public class PensionerDetailsController {
 
 	@Autowired
@@ -45,6 +48,7 @@ public class PensionerDetailsController {
 
 	@GetMapping("/pensionerDetailByAadhaar/{aadhaarNumber}")
 	public PensionerDetails getPensionerDetailByAadhaar(@PathVariable String aadhaarNumber) {
+		log.info("START - getPensionerDetailByAadhaar()");
 		return pensionerDetailService.getPensionerDetailByAadhaarNumber(aadhaarNumber);
 	}
 

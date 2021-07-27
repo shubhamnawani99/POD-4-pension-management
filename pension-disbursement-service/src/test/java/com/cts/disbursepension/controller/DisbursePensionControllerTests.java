@@ -142,7 +142,7 @@ class DisbursePensionControllerTests {
 		when(disbursePensionService.verifyPension(ArgumentMatchers.any())).thenReturn(new ProcessPensionResponse(10));
 		
 		mockMvc.perform(post("/DisbursePension").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
-				.content(objectMapper.writeValueAsString(new ErrorResponse("Testing Invalid Argument"))).accept(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(null)).accept(MediaType.APPLICATION_JSON)
 				.header("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")).andExpect(status().isBadRequest());
 	}
 

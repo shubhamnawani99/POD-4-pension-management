@@ -2,7 +2,11 @@ package com.cts.processPension.model;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,10 +18,15 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode
 public class PensionerInput {
+	@NotBlank(message = "Name cannot be blank")
 	private String name;
-	private  @DateTimeFormat(pattern="yyyy-MM-dd") Date dateOfBirth;
+	@DateTimeFormat(pattern = "yyyy-MM-dd", iso = ISO.DATE)
+	private Date dateOfBirth;
+	@NotBlank(message = "PAN Number cannot be blank")
 	private String pan;
-	private long aadharNumber;
+	@Size(min = 12, max = 12, message = "Aadhaar Number has invalid length")
+	private String aadharNumber;
+	@NotBlank(message = "Pension Type cannot be blank")
 	private String pensionType;
 	
 	

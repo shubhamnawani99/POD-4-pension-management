@@ -78,7 +78,7 @@ public class DisbursePensionServiceImpl implements IDisbursePensionService {
 	@Override
 	public PensionerDetail getPensionerDetail(String aadhaarNumber) {
 		log.debug("Start");
-		log.debug("End");
+		log.debug("End getPensionerDetail()");
 		return pensionerDetailsClient.pensionerDetailByAadhaar(aadhaarNumber);
 	}
 

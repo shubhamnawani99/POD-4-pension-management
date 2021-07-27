@@ -51,6 +51,7 @@ public class DisbursePensionController {
 	/**
 	 * @URL: http://localhost:8084/DisbursePension
 	 * @param ProcessPensionInput {"aadhaarNumber":"300545673456","pensionAmount":34563,"bankServiceCharge":500}
+	 * ProcessPensionInput_private {"aadhaarNumber":"123456789012","pensionAmount":31600,"bankServiceCharge":550}
 	 * @return ProcessPensionResponse with processPensionStatusCode 10 if
 	 *         processPensionInput is correct otherwise 21
 	 * @throws InvalidTokenException 

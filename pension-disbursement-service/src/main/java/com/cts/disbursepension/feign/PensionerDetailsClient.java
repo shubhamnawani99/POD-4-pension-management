@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.cts.disbursepension.model.PensionerDetail;
 
-@FeignClient(name = "pension-detail-service", url = "http://localhost:8083")
+@FeignClient(name = "pensioner-detail-service", url = "http://localhost:8083/")
 public interface PensionerDetailsClient {
 	/**
 	 * method to get pensioner details by aadhaar number
