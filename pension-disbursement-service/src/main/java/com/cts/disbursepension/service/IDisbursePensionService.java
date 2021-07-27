@@ -4,6 +4,12 @@ import com.cts.disbursepension.model.PensionerDetail;
 import com.cts.disbursepension.model.ProcessPensionInput;
 import com.cts.disbursepension.model.ProcessPensionResponse;
 
+/**
+ * Interface for Disburse Pension service
+ * 
+ * @author Anas Zubair
+ *
+ */
 public interface IDisbursePensionService {
 
 	/**
@@ -25,7 +31,9 @@ public interface IDisbursePensionService {
 	public ProcessPensionResponse verifyPension(ProcessPensionInput processPensionInput);
 
 	/**
-	 * verify pension amount by calculation pension amount using details in pensionerDetail
+	 * verify pension amount by calculation pension amount using details in
+	 * pensionerDetail
+	 * 
 	 * @param pensionerDetail
 	 * @param pensionAmount
 	 * @return true if pensionAmount is correct otherwise false
@@ -34,6 +42,7 @@ public interface IDisbursePensionService {
 
 	/**
 	 * verify bankCharges for given bankType
+	 * 
 	 * @param bankType
 	 * @param bankCharges
 	 * @return true if bankCharges is valid for given bankType else false
@@ -41,9 +50,12 @@ public interface IDisbursePensionService {
 	public boolean verifyBankCharges(String bankType, double bankCharges);
 
 	/**
-	 * get pensioner detail from pensioner-detail-microservice using given aadhaarNumber
+	 * get pensioner detail from pensioner-detail-microservice using given
+	 * aadhaarNumber
+	 * 
 	 * @param aadhaarNumber
-	 * @return PensionerDetail response that is received from pensioner-detail-microservice 
+	 * @return PensionerDetail response that is received from
+	 *         pensioner-detail-microservice
 	 */
 	public PensionerDetail getPensionerDetail(String aadhaarNumber);
 

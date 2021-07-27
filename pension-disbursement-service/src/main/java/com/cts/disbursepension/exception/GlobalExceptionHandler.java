@@ -1,3 +1,4 @@
+
 package com.cts.disbursepension.exception;
 
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +15,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * This Class will handle all major exception thrown in the application
+ * 
+ * @author Anas Zubair
+ *
+ */
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -25,7 +32,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		log.debug("Handling Argument not valid exception");
-		return new ResponseEntity<>(new ErrorResponse("Invalid Input"), status);
+		return new ResponseEntity<>(new ErrorResponse("Invalid Input"), headers, status);
 	}
 
 	/**
@@ -36,15 +43,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return ErrorResponse
 	 */
 	@ExceptionHandler(FeignException.class)
-	public ResponseEntity<String> handleFeignStatusException(FeignException exception,
-			HttpServletResponse response) {
+	public ResponseEntity<String> handleFeignStatusException(FeignException exception, HttpServletResponse response) {
 		log.debug("Handling Feign Client");
-		log.debug(exception.contentUTF8());
+		log.debug("Message: {}",exception.getMessage());
 		return new ResponseEntity<>(exception.contentUTF8(), HttpStatus.BAD_REQUEST);
 	}
 
 	/**
 	 * This method will handle InvalidTokenException
+	 * 
 	 * @param exception
 	 * @param response
 	 * @return ErrorResponse
@@ -53,6 +60,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleInvalidTokenException(InvalidTokenException exception,
 			HttpServletResponse response) {
 		log.debug("Handling Invalid Token exception");
+		log.debug("Message: {}",exception.getMessage());
 		return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.FORBIDDEN);
 	}
 

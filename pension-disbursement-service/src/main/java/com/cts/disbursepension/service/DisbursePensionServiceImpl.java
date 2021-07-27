@@ -30,15 +30,15 @@ public class DisbursePensionServiceImpl implements IDisbursePensionService {
 
 	@Override
 	public double findBankCharges(String bankType) {
-		log.debug("Start");
+		log.debug("Start - findBankCharges");
 		BankCharges bankCharges = bankChargesRepository.findByBankType(bankType.toLowerCase()).get(0);
-		log.debug("End");
+		log.debug("End - findBankCharges");
 		return bankCharges.getCharges();
 	}
 
 	@Override
 	public ProcessPensionResponse verifyPension(ProcessPensionInput processPensionInput) {
-		log.debug("Start");
+		log.debug("Start - verifyPension");
 		PensionerDetail pensionerDetail = getPensionerDetail(processPensionInput.getAadhaarNumber());
 		ProcessPensionResponse processPensionResponse = new ProcessPensionResponse();
 		if (verifyPensionAmount(pensionerDetail, processPensionInput.getPensionAmount()) && verifyBankCharges(
@@ -47,13 +47,13 @@ public class DisbursePensionServiceImpl implements IDisbursePensionService {
 		} else {
 			processPensionResponse.setProcessPensionStatusCode(21);
 		}
-		log.debug("End");
+		log.debug("End - verifyPension");
 		return processPensionResponse;
 	}
 
 	@Override
 	public boolean verifyPensionAmount(PensionerDetail pensionerDetails, double pensionAmount) {
-		log.debug("Start");
+		log.debug("Start verifyPensionAmount");
 		double expectedAmount = 0;
 
 		// calculating Pension Amount
@@ -63,22 +63,22 @@ public class DisbursePensionServiceImpl implements IDisbursePensionService {
 			expectedAmount = (0.50 * pensionerDetails.getSalary()) + pensionerDetails.getAllowance();
 		}
 		log.debug("Expected Amount is {}", expectedAmount);
-		log.debug("End");
+		log.debug("End - verifyPensionAmount");
 
 		return expectedAmount == pensionAmount;
 	}
 
 	@Override
 	public boolean verifyBankCharges(String bankType, double bankCharges) {
-		log.debug("Start");
-		log.debug("End");
+		log.debug("Start - verifyBankCharges");
+		log.debug("End - verifyBankCharges");
 		return findBankCharges(bankType) == bankCharges;
 	}
 
 	@Override
 	public PensionerDetail getPensionerDetail(String aadhaarNumber) {
-		log.debug("Start");
-		log.debug("End getPensionerDetail()");
+		log.debug("Start - getPensionDetail");
+		log.debug("End - getPensionerDetail()");
 		return pensionerDetailsClient.pensionerDetailByAadhaar(aadhaarNumber);
 	}
 

@@ -8,12 +8,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Model class for pensioner details
+ * 
+ * @author Anas Zubair
+ *
+ */
 @NoArgsConstructor
 @Getter
 @Setter
 public class PensionerDetail {
 	private String name;
-	@JsonFormat(shape = JsonFormat.Shape.STRING ,pattern = "YYYY-MM-dd" , timezone="IST")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-dd", timezone = "IST")
 	private Date dateOfBirth;
 	private String pan;
 	private double salary;
