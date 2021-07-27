@@ -21,6 +21,7 @@ class PensionDisbursementServiceTests {
 
 	@Test
 	void contextLoads() {
+		PensionDisbursementService.main(new String[] {});
 		assertThat(disbursePensionService).isNotNull();
 	}
 

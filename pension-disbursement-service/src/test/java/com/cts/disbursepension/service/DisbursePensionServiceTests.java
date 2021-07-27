@@ -71,7 +71,7 @@ class DisbursePensionServiceTests {
 		assertEquals(101, receivedPensionerDetails.getBank().getAccountNumber());
 		assertEquals("HDFC", receivedPensionerDetails.getBank().getBankName());
 		assertEquals("Jon Lanister", receivedPensionerDetails.getName());
-		assertThat(receivedPensionerDetails.getDateOfBirth().before(new Date(System.currentTimeMillis())));
+		assertTrue(receivedPensionerDetails.getDateOfBirth().before(new Date(System.currentTimeMillis())));
 		assertEquals("AZTYK3456", receivedPensionerDetails.getPan());
 
 	}

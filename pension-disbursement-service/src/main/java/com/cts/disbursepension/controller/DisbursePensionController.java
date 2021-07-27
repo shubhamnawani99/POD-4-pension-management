@@ -1,5 +1,7 @@
 package com.cts.disbursepension.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +61,7 @@ public class DisbursePensionController {
 	@PostMapping("/DisbursePension")
 	@ApiOperation(value = "disbursePension", notes = "Verify pension amount and bank service charge for given aadhaar", httpMethod = "POST", response = ProcessPensionResponse.class)
 	public ResponseEntity<ProcessPensionResponse> disbursePension( @RequestHeader(name = "Authorization") String token,
-			@RequestBody ProcessPensionInput processPensionInput) throws InvalidTokenException {
+			@RequestBody @Valid ProcessPensionInput processPensionInput) throws InvalidTokenException {
 		log.debug("Start");
 		if (!authorisationClient.validate(token)) {
 			throw new InvalidTokenException("You are not allowed to access this resource");

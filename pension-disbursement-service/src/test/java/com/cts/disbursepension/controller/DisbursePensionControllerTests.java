@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Collections;
+
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +19,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.cts.disbursepension.exception.ErrorResponse;
 import com.cts.disbursepension.feign.AuthorisationClient;
 import com.cts.disbursepension.feign.PensionerDetailsClient;
 import com.cts.disbursepension.model.ProcessPensionInput;
@@ -26,6 +27,8 @@ import com.cts.disbursepension.service.IDisbursePensionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import feign.FeignException;
+import feign.Request;
+import feign.Request.HttpMethod;
 
 /**
  * Test cases for DisbursePension Controller
@@ -45,7 +48,7 @@ class DisbursePensionControllerTests {
 
 	@MockBean
 	private AuthorisationClient authorisationClient;
-	
+
 	@MockBean
 	private PensionerDetailsClient pensionerDetailsClient;
 
@@ -57,14 +60,14 @@ class DisbursePensionControllerTests {
 
 	@BeforeEach
 	void setup() {
-		
-		//valid ProcessPensionInput
+
+		// valid ProcessPensionInput
 		validProcessPensionInput = new ProcessPensionInput();
 		validProcessPensionInput.setAadhaarNumber("300546467895");
 		validProcessPensionInput.setPensionAmount(138752.0);
 		validProcessPensionInput.setBankServiceCharge(500);
-		
-		//invalid ProcessPensionInput
+
+		// invalid ProcessPensionInput
 		invalidProcessPensionInput = new ProcessPensionInput();
 		invalidProcessPensionInput.setAadhaarNumber("300546467895");
 		invalidProcessPensionInput.setPensionAmount(145000.0);
@@ -90,9 +93,9 @@ class DisbursePensionControllerTests {
 
 		// performing test
 		mockMvc.perform(post("/DisbursePension").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
-				.header("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9").content(objectMapper.writeValueAsString(validProcessPensionInput))
-				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.processPensionStatusCode", Matchers.equalTo(10)));
+				.header("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
+				.content(objectMapper.writeValueAsString(validProcessPensionInput)).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.processPensionStatusCode", Matchers.equalTo(10)));
 	}
 
 	@Test
@@ -119,30 +122,39 @@ class DisbursePensionControllerTests {
 		// mock authorization microservice response
 		when(authorisationClient.validate(ArgumentMatchers.anyString())).thenReturn(false);
 
+		//performing test
 		mockMvc.perform(post("/DisbursePension").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
 				.content(objectMapper.writeValueAsString(invalidProcessPensionInput)).accept(MediaType.APPLICATION_JSON)
 				.header("Authorization", "user1")).andExpect(status().isForbidden());
 	}
-	
+
 	@Test
 	@DisplayName("Verify response for Invalid Aadhar Number")
 	void testDisbursePension_withInvalidAadhaar() throws Exception {
-		when(authorisationClient.validate(ArgumentMatchers.anyString())).thenReturn(true);
-		when(pensionerDetailsClient.pensionerDetailByAadhaar(ArgumentMatchers.anyString())).thenThrow(FeignException.class);
 		
+		// mock authorization microservice response
+		when(authorisationClient.validate(ArgumentMatchers.anyString())).thenReturn(true);
+		
+		//mock disbursePensionService verifyPension to throw FeignException
+		when(disbursePensionService.verifyPension(ArgumentMatchers.any()))
+				.thenThrow(new FeignException.BadRequest("Aadhaar number not found",
+						Request.create(HttpMethod.GET, "", Collections.emptyMap(), null, null, null), null));
+
+		// performing test
 		mockMvc.perform(post("/DisbursePension").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
 				.content(objectMapper.writeValueAsString(invalidProcessPensionInput)).accept(MediaType.APPLICATION_JSON)
-				.header("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")).andExpect(status().isOk());
+				.header("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")).andExpect(status().isBadRequest());
 	}
-	
+
 	@Test
 	@DisplayName("Verify response for Invalid Arguments")
 	void testDisbursePension_withInvalidArgument() throws Exception {
+		//mock authorization microservice response
 		when(authorisationClient.validate(ArgumentMatchers.anyString())).thenReturn(true);
-		when(disbursePensionService.verifyPension(ArgumentMatchers.any())).thenReturn(new ProcessPensionResponse(10));
-		
+
+		//performing test
 		mockMvc.perform(post("/DisbursePension").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
-				.content(objectMapper.writeValueAsString(null)).accept(MediaType.APPLICATION_JSON)
+				.content("{\"body\":\"invalid\"}").accept(MediaType.APPLICATION_JSON)
 				.header("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")).andExpect(status().isBadRequest());
 	}
 

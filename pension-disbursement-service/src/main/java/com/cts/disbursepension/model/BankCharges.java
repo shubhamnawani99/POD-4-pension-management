@@ -9,6 +9,12 @@ import javax.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * Model class for Bank Charges
+ * 
+ * @author Anas Zubair
+ *
+ */
 @Entity
 @NoArgsConstructor
 @Getter

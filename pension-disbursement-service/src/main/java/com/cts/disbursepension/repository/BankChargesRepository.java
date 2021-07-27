@@ -7,6 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import com.cts.disbursepension.model.BankCharges;
 
+/**
+ * Repository for Bank Charges
+ * @author Anas Zubair
+ *
+ */
 @Repository
 public interface BankChargesRepository extends JpaRepository<BankCharges, Integer> {
 	
