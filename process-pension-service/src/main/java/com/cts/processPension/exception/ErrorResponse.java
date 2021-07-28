@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 /**
  * Class for customizing error response in exception handler
  * 
- * @author Sunmeet
+ * @author Shubham Nawani
  *
  */
 @Data

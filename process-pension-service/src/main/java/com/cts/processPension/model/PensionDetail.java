@@ -7,6 +7,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Model class for pension details
+ * 
+ * @author Shubham Nawani
+ *
+ */
 @AllArgsConstructor
 @Getter
 public class PensionDetail {
@@ -17,6 +23,5 @@ public class PensionDetail {
 	private String pan;
 	private String pensionType;
 	private double pensionAmount;
-	
 
 }

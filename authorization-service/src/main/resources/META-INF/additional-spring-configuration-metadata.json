@@ -38,5 +38,20 @@
     "name": "jwtUtil.unsupportedMessage",
     "type": "java.lang.String",
     "description": "A description for 'jwtUtil.unsupportedMessage'"
+  },
+  {
+    "name": "userDetails.badCredentialsMessage",
+    "type": "java.lang.String",
+    "description": "A description for 'userDetails.badCredentialsMessage'"
+  },
+  {
+    "name": "userDetails.disabledAccountMessage",
+    "type": "java.lang.String",
+    "description": "A description for 'userDetails.disabledAccountMessage'"
+  },
+  {
+    "name": "userDetails.lockedAccountMessage",
+    "type": "java.lang.String",
+    "description": "A description for 'userDetails.lockedAccountMessage'"
   }
 ]}

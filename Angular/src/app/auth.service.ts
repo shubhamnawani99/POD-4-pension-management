@@ -17,19 +17,22 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/login`, user, { responseType: 'text' })
   }
 
-  // utility to check if the user is still logged in
+  // method to check if the user is still logged in
   isLoggedIn() {
-    return this.isUserLoggedIn;
+    return this.getToken() != null
   }
 
-  setSession(token: string) {
-    this.isUserLoggedIn = true;
-    localStorage.setItem('token', token);
-  }
-
+  // method to get token from local storage
   getToken() {
     return localStorage.getItem("token");
   }
+  
+  // method to set to session, by storing token in local storage
+  setSession(token: string) {
+    localStorage.setItem('token', token);
+  }
+
+ 
 
 
   isValid() {

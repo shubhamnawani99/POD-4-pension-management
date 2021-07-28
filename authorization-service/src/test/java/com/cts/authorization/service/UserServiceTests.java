@@ -13,6 +13,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,6 +41,9 @@ class UserServiceTests {
 	@MockBean
 	private UserRepository userRepository;
 
+	@Value("${userDetails.errorMessage}")
+	private String ERROR_MESSAGE;
+	
 	@Test
 	@DisplayName("This method is responsible to test LoadUserByUsername() method when username is valid")
 	void testLoadUserByUsername_validUsername() {
@@ -94,7 +98,7 @@ class UserServiceTests {
 		InvalidCredentialsException thrownException = assertThrows(InvalidCredentialsException.class,
 				() -> userServiceImpl.loadUserByUsername(id));
 		
-		assertTrue(thrownException.getMessage().contains("User does not exist"));
+		assertTrue(thrownException.getMessage().contains(ERROR_MESSAGE));
 		assertNotNull(securityUser);
 
 		log.info("END - testLoadUserByUsername_invalidUsername()");

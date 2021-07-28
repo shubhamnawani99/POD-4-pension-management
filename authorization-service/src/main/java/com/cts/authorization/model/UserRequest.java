@@ -23,10 +23,10 @@ import lombok.Setter;
 @Component
 public class UserRequest {
 
-	@NotBlank
-	@Size(min=6, max=25)
+	@NotBlank(message = "Username cannot be empty")
+	@Size(min=4, max=25, message = "Username length should be from 4 to 25 characters")
 	private String username;
 	
-	@NotBlank
+	@NotBlank(message = "Password cannot be empty")
 	private String password;
 }

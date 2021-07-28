@@ -17,12 +17,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -59,6 +62,18 @@ class AuthorizationControllerTests {
 	@MockBean
 	private AuthenticationManager authenticationManager;
 
+	@Value("${userDetails.errorMessage}")
+	private String ERROR_MESSAGE;
+	
+	@Value("${userDetails.badCredentialsMessage}")
+	private String BAD_CREDENTIALS_MESSAGE;
+
+	@Value("${userDetails.disabledAccountMessage}")
+	private String DISABLED_ACCOUNT_MESSAGE;
+	
+	@Value("${userDetails.lockedAccountMessage}")
+	private String LOCKED_ACCOUNT_MESSAGE;
+	
 	private static ObjectMapper mapper = new ObjectMapper();
 	private static SecurityUser validUser;
 	private static SecurityUser invalidUser;
@@ -117,7 +132,7 @@ class AuthorizationControllerTests {
 		log.info("START - testLogin_withGlobalExceptions()");
 		UserRequest user = new UserRequest("1", "adminpass@1234");
 
-		final String errorMessage = "Invalid Input";
+		final String errorMessage = "Invalid Credentials";
 				
 		String json = mapper.writeValueAsString(user);
 		log.info("Input data {}", json);
@@ -139,10 +154,9 @@ class AuthorizationControllerTests {
 
 		// Set the user request and role
 		UserRequest user = new UserRequest("admin404", "adminpass@1234");
-		final String errorMessage = "User does not exist";
 		
 		// mock certain functionalities to return a valid user and generate the token
-		when(authenticationManager.authenticate(ArgumentMatchers.any())).thenThrow(new BadCredentialsException(errorMessage));
+		when(authenticationManager.authenticate(ArgumentMatchers.any())).thenThrow(new BadCredentialsException(ERROR_MESSAGE));
 		
 		String json = mapper.writeValueAsString(user);
 		log.info("Input data {}", json);
@@ -152,9 +166,57 @@ class AuthorizationControllerTests {
 				.characterEncoding("UTF-8").content(json)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
-				.andExpect(jsonPath("$.message", Matchers.equalTo(errorMessage)));
+				.andExpect(jsonPath("$.message", Matchers.equalTo(ERROR_MESSAGE)));
 
 		log.info("END - testLogin_withInvalidCredentials()");
+	}
+	
+	@Test
+	@DisplayName("This method is responsible to test login() method with locked account credentials")
+	void testLogin_withLockedCredentials() throws Exception {
+		log.info("START - testLogin_withLockedCredentials()");
+
+		// Set the user request and role
+		UserRequest user = new UserRequest("admin405", "adminpass@1234");
+		
+		// mock certain functionalities to return a valid user and generate the token
+		when(authenticationManager.authenticate(ArgumentMatchers.any())).thenThrow(new LockedException(LOCKED_ACCOUNT_MESSAGE));
+		
+		String json = mapper.writeValueAsString(user);
+		log.info("Input data {}", json);
+
+		mockMvc.perform(post("/login")
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("UTF-8").content(json)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andExpect(jsonPath("$.message", Matchers.equalTo(LOCKED_ACCOUNT_MESSAGE)));
+
+		log.info("END - testLogin_withLockedCredentials()");
+	}
+	
+	@Test
+	@DisplayName("This method is responsible to test login() method with disabled account credentials")
+	void testLogin_withDisabledAccountCredentials() throws Exception {
+		log.info("START - testLogin_withDisabledAccountCredentials()");
+
+		// Set the user request and role
+		UserRequest user = new UserRequest("admin406", "adminpass@1234");
+		
+		// mock certain functionalities to return a valid user and generate the token
+		when(authenticationManager.authenticate(ArgumentMatchers.any())).thenThrow(new DisabledException(DISABLED_ACCOUNT_MESSAGE));
+		
+		String json = mapper.writeValueAsString(user);
+		log.info("Input data {}", json);
+
+		mockMvc.perform(post("/login")
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("UTF-8").content(json)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andExpect(jsonPath("$.message", Matchers.equalTo(DISABLED_ACCOUNT_MESSAGE)));
+
+		log.info("END - testLogin_withDisabledAccountCredentials()");
 	}
 	
 	/*****************************************************************

@@ -63,7 +63,7 @@ public class ProcessPensionController {
 	 */
 	@PostMapping("/processPension")
 	public ResponseEntity<ProcessPensionResponse> processPension(@RequestHeader(name = "Authorization") String token,
-			@RequestBody ProcessPensionInput processPensionInput) {
+			@RequestBody @Valid ProcessPensionInput processPensionInput) {
 		log.info("START - processPension()");
 
 		if (!authorisationClient.validate(token)) {

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,7 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserServiceImpl implements UserDetailsService {
 
-	private String USER_DOES_NOT_EXIST_MESSAGE = "User does not exist";
+	@Value("${userDetails.errorMessage}")
+	private String USER_DOES_NOT_EXIST_MESSAGE;
 
 	@Autowired
 	private UserRepository userRepository;

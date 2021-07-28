@@ -3,6 +3,7 @@ package com.cts.authorization.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,6 +49,15 @@ public class AuthorizationController {
 	@Autowired
 	private UserDetailsService userService;
 
+	@Value("${userDetails.badCredentialsMessage}")
+	private String BAD_CREDENTIALS_MESSAGE;
+
+	@Value("${userDetails.disabledAccountMessage}")
+	private String DISABLED_ACCOUNT_MESSAGE;
+	
+	@Value("${userDetails.lockedAccountMessage}")
+	private String LOCKED_ACCOUNT_MESSAGE;
+
 	/**
 	 * @URL: http://localhost:8081/login
 	 * 
@@ -66,9 +76,14 @@ public class AuthorizationController {
 			if (authenticate.isAuthenticated()) {
 				log.info("Valid User detected - logged in");
 			}
-		} catch (BadCredentialsException | DisabledException | LockedException e) {
-			throw new InvalidCredentialsException(e.getMessage());
+		} catch (BadCredentialsException e) {
+			throw new InvalidCredentialsException(BAD_CREDENTIALS_MESSAGE);
+		} catch (DisabledException e) {
+			throw new InvalidCredentialsException(DISABLED_ACCOUNT_MESSAGE);
+		} catch (LockedException e) {
+			throw new InvalidCredentialsException(LOCKED_ACCOUNT_MESSAGE);
 		}
+
 		String token = jwtUtil.generateToken(userRequest.getUsername());
 		log.info("END - login()");
 		return new ResponseEntity<>(token, HttpStatus.OK);

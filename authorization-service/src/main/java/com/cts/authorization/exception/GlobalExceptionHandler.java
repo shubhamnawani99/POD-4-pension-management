@@ -1,6 +1,9 @@
 package com.cts.authorization.exception;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,15 +25,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/**
 	 * Handles input validation errors
+	 * 
+	 * @param MethodArgumentNotValidException ex
+	 * @return ResponseEntity with error messages
 	 */
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-		ErrorResponse response = new ErrorResponse("Invalid Input", LocalDateTime.now());
+		ErrorResponse response = new ErrorResponse();
+		response.setMessage("Invalid Credentials");
+		response.setTimestamp(LocalDateTime.now());
+
+		// Get all validation errors
+		List<String> errors = ex.getBindingResult().getFieldErrors().stream().map(x -> x.getDefaultMessage()).collect(Collectors.toList());
+
+		// Add errors to the response map
+		response.setFieldErrors(errors);
 
 		return new ResponseEntity<>(response, headers, status);
 	}
+
 
 	/**
 	 * Handles invalid credentials exception
@@ -42,8 +57,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(InvalidCredentialsException.class)
 	public ResponseEntity<ErrorResponse> handlesUserNotFoundException(
 			InvalidCredentialsException invalidCredentialsException) {
-
-		ErrorResponse response = new ErrorResponse(invalidCredentialsException.getMessage(), LocalDateTime.now());
+		String errorMessage = invalidCredentialsException.getMessage();
+		ErrorResponse response = new ErrorResponse(errorMessage, LocalDateTime.now(), Collections.singletonList(errorMessage));
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 
@@ -56,8 +71,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(InvalidTokenException.class)
 	public ResponseEntity<ErrorResponse> handlesTokenInvalidException(InvalidTokenException invalidTokenException) {
-
-		ErrorResponse response = new ErrorResponse(invalidTokenException.getMessage(), LocalDateTime.now());
+		String errorMessage = invalidTokenException.getMessage();
+		ErrorResponse response = new ErrorResponse(errorMessage, LocalDateTime.now(), Collections.singletonList(errorMessage));
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 }

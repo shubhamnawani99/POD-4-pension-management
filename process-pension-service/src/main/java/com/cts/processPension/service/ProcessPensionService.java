@@ -11,6 +11,12 @@ import com.cts.processPension.model.PensionerInput;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Service class for Process Pension
+ * 
+ * @author Shubham Nawani
+ *
+ */
 @Service
 @Slf4j
 public class ProcessPensionService {
@@ -61,7 +67,8 @@ public class ProcessPensionService {
 
 	/**
 	 * Method to check the details entered by the user
-	 * @Data:  {"aadhaarNumber":"123456789012","pensionAmount":31600,"bankServiceCharge":550}
+	 * 
+	 * @Data: {"aadhaarNumber":"123456789012","pensionAmount":31600,"bankServiceCharge":550}
 	 * @author Shubham Nawani
 	 * @param PensionerInput
 	 * @param PensionerDetail

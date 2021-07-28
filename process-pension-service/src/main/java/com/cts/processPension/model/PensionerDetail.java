@@ -5,6 +5,12 @@ import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Model class for pensioner details
+ * 
+ * @author Shubham Nawani
+ *
+ */
 @Getter
 @AllArgsConstructor
 public class PensionerDetail {

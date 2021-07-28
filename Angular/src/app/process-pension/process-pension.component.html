@@ -1,27 +1,18 @@
-<h2 class="text-center">Enter details to calculate the pension amount</h2>
+<h2 class="text-center">Enter details to disburse the pension amount</h2>
 <div class="outer-div col-6 offset-3">
-<form (ngSubmit)='handlePensionerInput()' #pensionForm='ngForm' class="px-3">
+<form (ngSubmit)='handleProcessPensionInput()' #pensionForm='ngForm' class="px-3">
     <div class="form-group">
-        <label for="">Name</label>
-        <input type="text" class="form-control" name="name" [(ngModel)]='pensionerInput.name' />
-    </div>
-    <div class="mt-2">
-        <label for="">Date Of Birth</label>
-        <input type="date" class="form-control" name="dateOfBirth" [(ngModel)]='pensionerInput.dateOfBirth' />
-    </div>
-    <div class="mt-2">
-        <label for="">PAN Card Number</label>
-        <input type="text" class="form-control" name="pan" [(ngModel)]='pensionerInput.pan' />
-    </div>
-    <div class="mt-2">
         <label for="">Aadhaar Number</label>
-        <input type="text" class="form-control" name="aadhaarNumber" [(ngModel)]='pensionerInput.aadhaarNumber' />
+        <input type="text" class="form-control" name="aadhaarNumber" [(ngModel)]='processPensionInput.aadhaarNumber' />
     </div>
     <div class="mt-2">
-        <label for="">Pension Type</label>
-        <input type="text" class="form-control" name="pensionType" [(ngModel)]='pensionerInput.pensionType' />
+        <label for="">Pension Amount</label>
+        <input type="number" class="form-control" name="pensionAmount" [(ngModel)]='processPensionInput.pensionAmount' />
     </div>
- 
+    <div class="mt-2">
+        <label for="">Service Charge (Public Bank - INR 500, Private Bank - INR 550)</label>
+        <input type="number" class="form-control" name="serviceCharge" [(ngModel)]='processPensionInput.bankServiceCharge' />
+    </div>        
 
     <div>
         <button class="btn btn-primary mt-3 mx-3">Submit!</button>

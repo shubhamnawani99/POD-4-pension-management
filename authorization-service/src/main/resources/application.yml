@@ -5,7 +5,7 @@ server:
 # Secret Key To Generate Token
 app:
   secretKey: '[@q2Xg7@T4mOplFu#Ae]'
-  jwtValidityMinutes: 15
+  jwtValidityMinutes: 1500
   
 # spring properties
 spring:
@@ -32,4 +32,7 @@ jwtUtil:
   unsupportedMessage: Claims for token is not supported
   
 userDetails:
-  errorMessage: User Does Not Exist!    
+  errorMessage: Incorrect Username or Password
+  badCredentialsMessage: Incorrect Username or Password
+  disabledAccountMessage: Your account has been disabled
+  lockedAccountMessage: You account has been locked, please contact your administrator for more details

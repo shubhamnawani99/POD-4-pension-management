@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { PensionDetail } from '../pension-detail';
-import { PensionerInput } from '../pensioner-input';
+import { ProcessPensionInput } from '../process-pension-input';
+import { ProcessPensionResponse } from '../process-pension-response';
 import { ProcessPensionService } from '../process-pension.service';
 
 @Component({
@@ -24,17 +24,23 @@ export class ProcessPensionComponent implements OnInit {
     this.fieldErrors = []
   }
 
-  pensionDetails = new PensionDetail("", new Date, "", "", 0.0)
-  pensionerInput = new PensionerInput("", new Date, "", "", "")
+  processPensionResponse  = new ProcessPensionResponse(21);
+  processPensionInput = new ProcessPensionInput("", 0, 0);
 
-  handlePensionerInput() {
-    this.pservice.getPensionDetails(this.pensionerInput)
+  handleProcessPensionInput() {
+    this.pservice.processPension(this.processPensionInput)
       .subscribe(
         data => {
-          this.msg = "Details are correct"
-          this.color = "text-info"
-          this.pensionDetails = data
-          console.log(this.pensionDetails);
+          this.processPensionResponse = data
+          if(this.processPensionResponse.processPensionStatusCode == 10){
+            this.msg = "Pension disbursement Success"
+            this.color = "text-info"
+          }
+          else {
+            this.msg = "Pension amount calculated is wrong, Please redo the calculation."
+            this.color = "text-danger"
+          }
+          console.log(this.processPensionResponse);
         },
         error => {
           this.fieldErrors = error.error.fieldErrors;

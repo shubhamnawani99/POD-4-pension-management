@@ -1,21 +1,21 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark-blue">
   <div class="container-fluid">
-    <a class="navbar-brand" routerLink="home">Pension Management System</a>
+    <a class="navbar-brand">Pension Management System</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <div *ngIf="!isLoggedIn()">
+        <div *ngIf="isLoggedIn()">
           <li class="nav-item">
             <a class="nav-link active" routerLink="home" aria-current="page" href="#"><i
                 class="fas fa-home">&nbsp;</i>Home</a>
           </li>
         </div>
-        <div *ngIf="!isLoggedIn()">
+        <div *ngIf="isLoggedIn()">
           <li class="nav-item">
-            <a class="nav-link" routerLink="login" href="#"><i class="fas fa-sign-in-alt">&nbsp;</i>Login</a>
+            <a class="nav-link" routerLink="pension-details" href="#">Pension Details</a>
           </li>
         </div>
         <div *ngIf="isLoggedIn()">

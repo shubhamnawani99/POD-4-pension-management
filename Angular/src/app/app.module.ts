@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { ProcessPensionComponent } from './process-pension/process-pension.component';
 import { AuthInterceptor } from './auth.interceptor';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { PensionDetailsComponent } from './pension-details/pension-details.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     HomeComponent,
     ProcessPensionComponent,
     PageNotFoundComponent,
+    PensionDetailsComponent,
   ],
   imports: [
     BrowserModule,

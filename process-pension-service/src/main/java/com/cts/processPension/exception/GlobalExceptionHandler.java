@@ -25,6 +25,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Global Exception Handler to handle all the exception within the application
+ * 
+ * @author Shubham Nawani
+ *
+ */
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -43,15 +49,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-		log.info(ex.toString());
 		ErrorResponse response = new ErrorResponse();
 		response.setMessage("Invalid Credentials");
 		response.setTimestamp(LocalDateTime.now());
 
 		// Get all validation errors
-		List<String> errors = ex.getBindingResult().getFieldErrors().stream().map(x -> {
-			return x.getDefaultMessage();
-		}).collect(Collectors.toList());
+		List<String> errors = ex.getBindingResult().getFieldErrors().stream().map(x -> x.getDefaultMessage())
+				.collect(Collectors.toList());
 
 		// Add errors to the response map
 		response.setFieldErrors(errors);
