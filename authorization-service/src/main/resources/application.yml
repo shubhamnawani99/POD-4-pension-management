@@ -21,7 +21,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create 
-    show-sql: false    
+    show-sql: false
+
+#Eureka client
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
     
 # Error Messages
 jwtUtil:
