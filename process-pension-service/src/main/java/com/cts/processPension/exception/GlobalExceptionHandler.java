@@ -76,7 +76,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleFeignStatusException(FeignException exception,
 			HttpServletResponse response) throws JsonProcessingException {
 		log.debug("Handling Feign Client");
-		ErrorResponse errorResponse = objectMapper.readValue(exception.contentUTF8(), ErrorResponse.class);
+		ErrorResponse errorResponse = new ErrorResponse();
+		if (exception.contentUTF8().isBlank()) {
+			// when one of the microservice is offline or some URL error
+			errorResponse.setMessage("Something went wrong");
+			errorResponse.setTimestamp(LocalDateTime.now());
+		} else {
+			errorResponse = objectMapper.readValue(exception.contentUTF8(), ErrorResponse.class);
+		}
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 

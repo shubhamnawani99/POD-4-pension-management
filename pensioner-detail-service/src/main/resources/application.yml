@@ -6,6 +6,12 @@ server:
 spring:
  application:
   name: PENSIONER-DETAIL-SERVICE
+  
+#Eureka client
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
 
 # Error Messages
 errorMessage: Aadhaar Number Not Found
