@@ -1,7 +1,7 @@
 package com.cts.pensionerDetails.Model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * @author Sreekanth Gantela
@@ -9,8 +9,9 @@ import lombok.Data;
  * like bankName, bankType, accountNumber
  *
  */
-@Data
+
 @AllArgsConstructor
+@Getter
 public class BankDetails {
 	
 	private String bankName;

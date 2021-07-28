@@ -57,7 +57,8 @@ class PensionDetailServiceTest {
 
 		PensionerDetails pensionerDetail = new PensionerDetails("Achyuth", DateUtil.parseDate("12-09-1956"),
 				"BHMER12436", 27000, 10000, "self", new BankDetails("ICICI", 12345678, "private"));
-		assertEquals(pds.getPensionerDetailByAadhaarNumber(aadhaarNumber), pensionerDetail);
+		assertEquals(pds.getPensionerDetailByAadhaarNumber(aadhaarNumber).getPan(), pensionerDetail.getPan());
+		assertEquals(pds.getPensionerDetailByAadhaarNumber(aadhaarNumber).getBank().getAccountNumber(), pensionerDetail.getBank().getAccountNumber());
 	}
 
 	/**

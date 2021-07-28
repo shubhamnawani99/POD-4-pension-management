@@ -8,6 +8,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * @author Sreekanth Gantela
+ * 
+ * Class for sending a custom error response in exception handler
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor
