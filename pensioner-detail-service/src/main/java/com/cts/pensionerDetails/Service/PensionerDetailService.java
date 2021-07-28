@@ -53,7 +53,6 @@ public class PensionerDetailService {
 					PensionerDetails pensionerDetails = new PensionerDetails(person[1], DateUtil.parseDate(person[2]), person[3],
 							Double.parseDouble(person[4]), Double.parseDouble(person[5]), person[6],
 							new BankDetails(person[7], Long.parseLong(person[8]), person[9]));
-					log.info(pensionerDetails.getDateOfBirth().toString());
 					return pensionerDetails;
 				}
 			}

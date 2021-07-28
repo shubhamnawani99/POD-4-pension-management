@@ -5,7 +5,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * @author Sreekant Gantela This is the Model package PensionerDetails class
@@ -16,7 +16,7 @@ import lombok.Data;
  *         constructors
  *
  */
-@Data
+@Getter
 @AllArgsConstructor
 public class PensionerDetails {
 

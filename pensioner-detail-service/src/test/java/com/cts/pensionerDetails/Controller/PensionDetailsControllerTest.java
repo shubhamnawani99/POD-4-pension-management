@@ -1,7 +1,5 @@
 package com.cts.pensionerDetails.Controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -39,9 +37,6 @@ class PensionDetailsControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@Autowired
-	private PensionerDetailsController controller;
-
 	@MockBean
 	private PensionerDetailService service;
 	
@@ -56,10 +51,14 @@ class PensionDetailsControllerTest {
 		final String aadhaarNumber = "123456789012";
 		PensionerDetails pensionerDetail = new PensionerDetails("Shubham", DateUtil.parseDate("29-01-1999"),
 				"PCASD1234Q", 27000, 10000, "self", new BankDetails("ICICI", 12345678, "private"));
-		when(service.getPensionerDetailByAadhaarNumber(aadhaarNumber)).thenReturn(pensionerDetail);
-		PensionerDetails actual = controller.getPensionerDetailByAadhaar(aadhaarNumber);
-		assertNotNull(actual);
-		assertEquals(actual, pensionerDetail);
+		when(service.getPensionerDetailByAadhaarNumber(aadhaarNumber)).thenReturn(pensionerDetail);			
+		mockMvc.perform(get("/pensionerDetailByAadhaar/{aadhaarNumber}", aadhaarNumber)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.name", Matchers.equalTo("Shubham")))
+				.andExpect(jsonPath("$.pan",Matchers.equalTo("PCASD1234Q")))
+				.andExpect(jsonPath("$.dateOfBirth", Matchers.equalTo("1999-01-29")))
+				.andExpect(jsonPath("$.bank.accountNumber", Matchers.equalTo(12345678)));
 
 	}
 
