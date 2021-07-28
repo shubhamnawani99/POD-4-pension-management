@@ -3,6 +3,7 @@ package com.cts.processPension.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -14,7 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.cts.processPension.client.PensionerDetailClient;
+import com.cts.processPension.exception.NotFoundException;
+import com.cts.processPension.feign.PensionerDetailsClient;
 import com.cts.processPension.model.Bank;
 import com.cts.processPension.model.PensionDetail;
 import com.cts.processPension.model.PensionerDetail;
@@ -33,7 +35,7 @@ class ProcessPensionServiceTest {
 	ProcessPensionService processPensionService;
 
 	@MockBean
-	PensionerDetailClient pensionerDetailClient;
+	PensionerDetailsClient pensionerDetailClient;
 
 	@Test
 	void testCheckDetailsForCorrectPensionerInputForSelfPensionType() throws ParseException {
@@ -45,7 +47,8 @@ class ProcessPensionServiceTest {
 				10000, "self", bank);
 
 		assertTrue(processPensionService.checkdetails(input, details));
-
+		assertEquals(456678, bank.getAccountNumber());
+		assertNotNull(details);
 	}
 
 	@Test
@@ -157,5 +160,30 @@ class ProcessPensionServiceTest {
 		// test cases
 		assertEquals(90000, pensionDetailFamily.getPensionAmount());
 		assertNotNull(pensionDetailFamily);
+	}
+	
+	/**
+	 * @author Shubham Nawani
+	 * @throws ParseException
+	 */
+	@Test
+	void testCheckDetails_incorrectPensionerInput() throws ParseException {
+		// name, DOB, pan, aadhaar, type
+		PensionerInput pensionerInput = new PensionerInput("Shubham", DateUtil.parseDate("23-11-1996"), "ASDFG3457",
+				"123456789012", "self");
+
+		Bank bank = new Bank("ICICI", 456678, "public");
+
+		PensionerDetail details_family = new PensionerDetail("Shubham", DateUtil.parseDate("23-11-1996"), "ASDFG3456",
+				100000, 10000, "self", bank);
+
+		// mock the feign client
+		when(pensionerDetailClient.getPensionerDetailByAadhaar(pensionerInput.getAadhaarNumber()))
+				.thenReturn(details_family);
+
+		NotFoundException notFoundException = assertThrows(NotFoundException.class, () -> processPensionService.getPensionDetails(pensionerInput));
+		
+		assertEquals("Details entered are incorrect", notFoundException.getMessage());
+		assertNotNull(notFoundException);
 	}
 }

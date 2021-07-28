@@ -9,7 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * Model class for pensioner input, given by the user
@@ -17,8 +17,8 @@ import lombok.Data;
  * @author Shubham Nawani
  *
  */
+@Getter
 @AllArgsConstructor
-@Data
 public class PensionerInput {
 
 	@NotBlank(message = "Name cannot be blank")

@@ -1,13 +1,11 @@
 package com.cts.processPension.model;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Range;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +16,6 @@ import lombok.Setter;
  * @author Anas Zubair
  *
  */
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter

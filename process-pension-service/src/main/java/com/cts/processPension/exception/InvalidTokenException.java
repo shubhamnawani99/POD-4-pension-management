@@ -2,7 +2,7 @@ package com.cts.processPension.exception;
 
 /**
  * This exception is thrown when user sends invalid token in api request
- * @author Chop
+ * @author Shubham Nawani
  *
  */
 public class InvalidTokenException extends RuntimeException {

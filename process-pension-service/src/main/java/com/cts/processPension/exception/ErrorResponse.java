@@ -6,9 +6,9 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Class for customizing error response in exception handler
@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
  * @author Shubham Nawani
  *
  */
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
 public class ErrorResponse {
 

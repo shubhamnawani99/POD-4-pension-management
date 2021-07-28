@@ -1,0 +1,11 @@
+# server properties
+server:
+ port: 8083
+
+# spring properties
+spring:
+ application:
+  name: PENSIONER-DETAIL-SERVICE
+
+# Error Messages
+errorMessage: Aadhaar Number Not Found

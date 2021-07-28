@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cts.processPension.client.AuthorisationClient;
-import com.cts.processPension.client.PensionDisbursementClient;
 import com.cts.processPension.exception.InvalidTokenException;
+import com.cts.processPension.feign.AuthorisationClient;
+import com.cts.processPension.feign.PensionDisbursementClient;
 import com.cts.processPension.model.PensionDetail;
 import com.cts.processPension.model.PensionerInput;
 import com.cts.processPension.model.ProcessPensionInput;

@@ -3,8 +3,8 @@ package com.cts.processPension.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cts.processPension.client.PensionerDetailClient;
 import com.cts.processPension.exception.NotFoundException;
+import com.cts.processPension.feign.PensionerDetailsClient;
 import com.cts.processPension.model.PensionDetail;
 import com.cts.processPension.model.PensionerDetail;
 import com.cts.processPension.model.PensionerInput;
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProcessPensionService {
 	@Autowired
-	PensionerDetailClient pensionerDetailClient;
+	PensionerDetailsClient pensionerDetailClient;
 
 	/**
 	 * This method is responsible to get the pension details if input details are
