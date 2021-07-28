@@ -15,11 +15,16 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update 
-    show-sql: false
+      ddl-auto: create 
+    show-sql: true
 
 #Eureka client
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
+    
+logging:
+  level:
+    '[org.springframework.web]': ERROR
+    '[com.cts.processPension]': DEBUG       

@@ -11,16 +11,22 @@ import java.text.ParseException;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.cts.processPension.exception.NotFoundException;
+import com.cts.processPension.feign.PensionDisbursementClient;
 import com.cts.processPension.feign.PensionerDetailsClient;
 import com.cts.processPension.model.Bank;
+import com.cts.processPension.model.PensionAmountDetail;
 import com.cts.processPension.model.PensionDetail;
 import com.cts.processPension.model.PensionerDetail;
 import com.cts.processPension.model.PensionerInput;
+import com.cts.processPension.model.ProcessPensionInput;
+import com.cts.processPension.model.ProcessPensionResponse;
+import com.cts.processPension.repository.PensionDetailsRepository;
 import com.cts.processPension.util.DateUtil;
 
 /**
@@ -32,10 +38,16 @@ import com.cts.processPension.util.DateUtil;
 class ProcessPensionServiceTest {
 
 	@Autowired
-	ProcessPensionService processPensionService;
+	private ProcessPensionService processPensionService;
 
 	@MockBean
-	PensionerDetailsClient pensionerDetailClient;
+	private PensionerDetailsClient pensionerDetailClient;
+
+	@MockBean
+	private PensionDisbursementClient pensionDisbursementClient;
+
+	@MockBean
+	private PensionDetailsRepository pensionDetailsRepository;
 
 	@Test
 	void testCheckDetailsForCorrectPensionerInputForSelfPensionType() throws ParseException {
@@ -134,7 +146,7 @@ class ProcessPensionServiceTest {
 		assertEquals(60000, pensionDetailFamily.getPensionAmount());
 		assertNotNull(pensionDetailFamily);
 	}
-	
+
 	/**
 	 * @author Shubham Nawani
 	 * @throws ParseException
@@ -161,7 +173,7 @@ class ProcessPensionServiceTest {
 		assertEquals(90000, pensionDetailFamily.getPensionAmount());
 		assertNotNull(pensionDetailFamily);
 	}
-	
+
 	/**
 	 * @author Shubham Nawani
 	 * @throws ParseException
@@ -181,9 +193,50 @@ class ProcessPensionServiceTest {
 		when(pensionerDetailClient.getPensionerDetailByAadhaar(pensionerInput.getAadhaarNumber()))
 				.thenReturn(details_family);
 
-		NotFoundException notFoundException = assertThrows(NotFoundException.class, () -> processPensionService.getPensionDetails(pensionerInput));
-		
+		NotFoundException notFoundException = assertThrows(NotFoundException.class,
+				() -> processPensionService.getPensionDetails(pensionerInput));
+
 		assertEquals("Details entered are incorrect", notFoundException.getMessage());
 		assertNotNull(notFoundException);
+	}
+
+	/**
+	 * @author Shubham Nawani
+	 * @throws Exception
+	 */
+	@Test
+	void testProcessPension_withValidProcessResponse() throws Exception {
+		ProcessPensionInput processPensionInput = new ProcessPensionInput();
+		processPensionInput.setAadhaarNumber("123456789012");
+		processPensionInput.setBankServiceCharge(550.00);
+		processPensionInput.setPensionAmount(31650.00);
+		PensionAmountDetail pensionAmountDetail = new PensionAmountDetail("123456789012", 31650.00, 550.00, 31000.00);
+		when(pensionDisbursementClient.disbursePension("correct_token", processPensionInput))
+				.thenReturn(new ProcessPensionResponse(10));
+
+		when(pensionDetailsRepository.save(ArgumentMatchers.any())).thenReturn(pensionAmountDetail);
+
+		ProcessPensionResponse processPensionActual = processPensionService.processPension("correct_token", processPensionInput);
+		assertEquals(10, processPensionActual.getProcessPensionStatusCode());
+	}
+	
+	/**
+	 * @author Shubham Nawani
+	 * @throws Exception
+	 */
+	@Test
+	void testProcessPension_withInValidProcessResponse() throws Exception {
+		ProcessPensionInput processPensionInput = new ProcessPensionInput();
+		processPensionInput.setAadhaarNumber("123456789012");
+		processPensionInput.setBankServiceCharge(550.00);
+		processPensionInput.setPensionAmount(31650.00);
+		PensionAmountDetail pensionAmountDetail = new PensionAmountDetail("123456789012", 31650.00, 550.00, 31000.00);
+		when(pensionDisbursementClient.disbursePension("correct_token", processPensionInput))
+				.thenReturn(new ProcessPensionResponse(21));
+
+		when(pensionDetailsRepository.save(ArgumentMatchers.any())).thenReturn(pensionAmountDetail);
+
+		ProcessPensionResponse processPensionActual = processPensionService.processPension("correct_token", processPensionInput);
+		assertEquals(21, processPensionActual.getProcessPensionStatusCode());
 	}
 }

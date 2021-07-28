@@ -22,9 +22,7 @@ import com.cts.processPension.exception.NotFoundException;
 import com.cts.processPension.feign.AuthorisationClient;
 import com.cts.processPension.feign.PensionDisbursementClient;
 import com.cts.processPension.feign.PensionerDetailsClient;
-import com.cts.processPension.model.Bank;
 import com.cts.processPension.model.PensionDetail;
-import com.cts.processPension.model.PensionerDetail;
 import com.cts.processPension.model.PensionerInput;
 import com.cts.processPension.model.ProcessPensionInput;
 import com.cts.processPension.model.ProcessPensionResponse;
@@ -100,7 +98,7 @@ class ProcessPensionControllerTest {
 	void testProcessPension_withValidInput() throws Exception {
 
 		// mock disbursePensionSerive response
-		when(pensionDisbursementClient.disbursePension(ArgumentMatchers.any(), ArgumentMatchers.any()))
+		when(processPensionService.processPension(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(new ProcessPensionResponse(10));
 
 		// mock authorization microservice response
@@ -118,7 +116,7 @@ class ProcessPensionControllerTest {
 	void testProcessPension_withInvalidInput() throws Exception {
 
 		// mock disbursePensionSerive response
-		when(pensionDisbursementClient.disbursePension(ArgumentMatchers.any(), ArgumentMatchers.any()))
+		when(processPensionService.processPension(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(new ProcessPensionResponse(21));
 
 		// mock authorization microservice response

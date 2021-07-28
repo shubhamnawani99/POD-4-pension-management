@@ -20,7 +20,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create 
+      ddl-auto: create-drop
     show-sql: false
 
 #Eureka client
@@ -42,3 +42,8 @@ userDetails:
   badCredentialsMessage: Incorrect Username or Password
   disabledAccountMessage: Your account has been disabled
   lockedAccountMessage: You account has been locked, please contact your administrator for more details
+  
+logging:
+ level:
+    '[org.springframework.web]': ERROR
+    '[com.cts.processPension]': DEBUG       
