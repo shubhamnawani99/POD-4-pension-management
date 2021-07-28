@@ -4,10 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cts.processPension.exception.NotFoundException;
+import com.cts.processPension.feign.PensionDisbursementClient;
 import com.cts.processPension.feign.PensionerDetailsClient;
+import com.cts.processPension.model.PensionAmountDetail;
 import com.cts.processPension.model.PensionDetail;
 import com.cts.processPension.model.PensionerDetail;
 import com.cts.processPension.model.PensionerInput;
+import com.cts.processPension.model.ProcessPensionInput;
+import com.cts.processPension.model.ProcessPensionResponse;
+import com.cts.processPension.repository.PensionDetailsRepository;
+import com.cts.processPension.repository.PensionerDetailsRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,8 +26,18 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class ProcessPensionService {
+
 	@Autowired
-	PensionerDetailsClient pensionerDetailClient;
+	private PensionerDetailsClient pensionerDetailClient;
+
+	@Autowired
+	private PensionDisbursementClient pensionDisbursementClient;
+
+	@Autowired
+	private PensionDetailsRepository pensionDetailsRepository;
+
+	@Autowired
+	private PensionerDetailsRepository pensionerDetailsRepository;
 
 	/**
 	 * This method is responsible to get the pension details if input details are
@@ -41,6 +57,9 @@ public class ProcessPensionService {
 
 		// check if the entered details are correct
 		if (checkdetails(pensionerInput, pensionerDetail)) {
+			// save the input pensioner details into the database
+			pensionerDetailsRepository.save(pensionerInput);
+			// calculate the amount and return the pension detail object
 			return calculatePensionAmount(pensionerDetail);
 		} else {
 			throw new NotFoundException("Details entered are incorrect");
@@ -68,7 +87,7 @@ public class ProcessPensionService {
 	/**
 	 * Method to check the details entered by the user
 	 * 
-	 * @Data: {"aadhaarNumber":"123456789012","pensionAmount":31600,"bankServiceCharge":550}
+	 * @Data {"aadhaarNumber":"123456789012","pensionAmount":31600,"bankServiceCharge":550}
 	 * @author Shubham Nawani
 	 * @param PensionerInput
 	 * @param PensionerDetail
@@ -79,5 +98,34 @@ public class ProcessPensionService {
 				&& (pensionerInput.getDateOfBirth().compareTo(pensionerDetail.getDateOfBirth()) == 0)
 				&& pensionerInput.getPan().equalsIgnoreCase(pensionerDetail.getPan())
 				&& pensionerInput.getPensionType().equalsIgnoreCase(pensionerDetail.getPensionType()));
+	}
+
+	/**
+	 * Method to get status code from the disbursement micro-service
+	 * 
+	 * @author Shubham Nawani
+	 * @param token               Authentication JWT Token
+	 * @param processPensionInput Processing input given by user
+	 * @return status code: {10: Pension Disbursed, 21: Invalid Input}
+	 */
+	public ProcessPensionResponse processPension(String token, ProcessPensionInput processPensionInput) {
+		int hitCounter = 0;
+		ProcessPensionResponse pensionResponse = pensionDisbursementClient.disbursePension(token, processPensionInput);
+
+		// retry the disbursement 2 more times if status code is 21
+		while (pensionResponse.getProcessPensionStatusCode() == 21 && hitCounter < 2) {
+			log.debug("Hitting the disbursement service again...");
+			pensionResponse = pensionDisbursementClient.disbursePension(token, processPensionInput);
+			++hitCounter;
+		}
+
+		// if response is 10, then we store the amount details in the database 
+		pensionDetailsRepository.save(new PensionAmountDetail(
+				processPensionInput.getAadhaarNumber(), 
+				processPensionInput.getPensionAmount(),
+				processPensionInput.getBankServiceCharge(),
+				processPensionInput.getPensionAmount() - processPensionInput.getBankServiceCharge()));
+		
+		return pensionResponse;
 	}
 }
