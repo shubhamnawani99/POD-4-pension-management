@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cts.processPension.exception.InvalidTokenException;
 import com.cts.processPension.feign.AuthorisationClient;
+import com.cts.processPension.feign.PensionDisbursementClient;
 import com.cts.processPension.model.PensionDetail;
 import com.cts.processPension.model.PensionerInput;
 import com.cts.processPension.model.ProcessPensionInput;
@@ -25,6 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @CrossOrigin
 public class ProcessPensionController {
+
+	@Autowired
+	PensionDisbursementClient pensionDisbursementClient;
 
 	@Autowired
 	ProcessPensionService processPensionService;
@@ -52,7 +56,8 @@ public class ProcessPensionController {
 
 	/**
 	 * @URL: http://localhost:8082/processPension
-	 * @param token               {"aadhaarNumber":"123456789012","pensionAmount":31600,"bankServiceCharge":550}
+	 * @param token
+	 * {"aadhaarNumber":"123456789012","pensionAmount":31600,"bankServiceCharge":550}
 	 * @param processPensionInput
 	 * @return status code indicating whether the process was success or not
 	 */
@@ -65,7 +70,7 @@ public class ProcessPensionController {
 			throw new InvalidTokenException("You are not allowed to access this resource");
 		}
 		log.info("END - processPension()");
-		return new ResponseEntity<>(processPensionService.processPension(token, processPensionInput), HttpStatus.OK);
+		return new ResponseEntity<>(pensionDisbursementClient.disbursePension(token, processPensionInput), HttpStatus.OK);
 	}
 
 }
