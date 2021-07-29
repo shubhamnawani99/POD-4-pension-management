@@ -1,8 +1,6 @@
 
 package com.cts.disbursepension.exception;
 
-import java.time.LocalDateTime;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import feign.Feign;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,6 +45,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * This will handle all Feign related Exception
 	 * 
+	 * @author Shubham Nawani, Anas Zubair
 	 * @param exception
 	 * @param response
 	 * @return ErrorResponse

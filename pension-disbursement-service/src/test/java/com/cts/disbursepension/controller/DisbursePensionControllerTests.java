@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.nio.charset.Charset;
 import java.util.Collections;
 
 import org.hamcrest.Matchers;
@@ -31,7 +30,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import feign.Request;
 import feign.Request.HttpMethod;
-import jdk.internal.org.jline.utils.Log;
 
 /**
  * Test cases for DisbursePension Controller
