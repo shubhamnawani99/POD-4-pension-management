@@ -23,7 +23,12 @@ public class ErrorResponse {
 
 	private String message;
 	private LocalDateTime timestamp;
-	
+
+	public ErrorResponse(String message) {
+		this.timestamp = LocalDateTime.now();
+		this.message = message;
+	}
+
 	/**
 	 * Used only for input validation errors
 	 */

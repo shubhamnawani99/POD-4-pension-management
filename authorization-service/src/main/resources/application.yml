@@ -5,12 +5,12 @@ server:
 # Secret Key To Generate Token
 app:
   secretKey: '[@q2Xg7@T4mOplFu#Ae]'
-  jwtValidityMinutes: 1500
+  jwtValidityMinutes: 15
   
 # spring properties
 spring:
   application:
-    name: AUTH-SERVICE  
+    name: AUTH-SERVICE
     
 # Configure Database here
   datasource:
