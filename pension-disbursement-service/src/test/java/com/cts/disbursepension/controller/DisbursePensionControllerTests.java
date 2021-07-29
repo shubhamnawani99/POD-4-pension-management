@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.nio.charset.Charset;
 import java.util.Collections;
 
 import org.hamcrest.Matchers;
@@ -24,11 +25,13 @@ import com.cts.disbursepension.feign.PensionerDetailsClient;
 import com.cts.disbursepension.model.ProcessPensionInput;
 import com.cts.disbursepension.model.ProcessPensionResponse;
 import com.cts.disbursepension.service.IDisbursePensionService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import feign.FeignException;
 import feign.Request;
 import feign.Request.HttpMethod;
+import jdk.internal.org.jline.utils.Log;
 
 /**
  * Test cases for DisbursePension Controller
@@ -130,7 +133,7 @@ class DisbursePensionControllerTests {
 
 	@Test
 	@DisplayName("Verify response for Invalid Aadhar Number")
-	void testDisbursePension_withInvalidAadhaar() throws Exception {
+	void testDisbursePension_withInvalidAadhaar() throws JsonProcessingException, Exception  {
 		
 		// mock authorization microservice response
 		when(authorisationClient.validate(ArgumentMatchers.anyString())).thenReturn(true);
@@ -144,6 +147,7 @@ class DisbursePensionControllerTests {
 		mockMvc.perform(post("/DisbursePension").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
 				.content(objectMapper.writeValueAsString(invalidProcessPensionInput)).accept(MediaType.APPLICATION_JSON)
 				.header("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")).andExpect(status().isBadRequest());
+		
 	}
 
 	@Test
