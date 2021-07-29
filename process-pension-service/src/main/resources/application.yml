@@ -9,14 +9,14 @@ spring:
     
 # Configure Database here
   datasource:
-    url: jdbc:mysql://localhost:3306/pension_management
+    url: jdbc:mysql://localhost:3306/process_pension
     username: student
     password: student
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: create 
-    show-sql: true
+    show-sql: false
 
 #Eureka client
 eureka:

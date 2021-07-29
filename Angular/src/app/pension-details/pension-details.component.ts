@@ -31,9 +31,9 @@ export class PensionDetailsComponent implements OnInit {
     this.pservice.getPensionDetails(this.pensionerInput)
       .subscribe(
         data => {
-          this.msg = "Details are correct"
           this.color = "text-info"
           this.pensionDetails = data
+          this.msg = "The pension amount is " + this.pensionDetails.pensionAmount;
         },
         error => {
           this.fieldErrors = error.error.fieldErrors;
