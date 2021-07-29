@@ -45,9 +45,6 @@ export class LoginComponent implements OnInit {
         // if login failed, display the error
         error => {
           this.fieldErrors = JSON.parse(error.error).fieldErrors;
-          if(this.fieldErrors == null){
-            console.log("Service is down, please try again later...");
-          }
         }
       );
     

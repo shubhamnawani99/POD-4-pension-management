@@ -52,8 +52,8 @@ public class ProcessPensionController {
 
 	/**
 	 * @URL: http://localhost:8082/processPension
-	 * @param token
-	 * @param processPensionInput {"aadhaarNumber":"123456789012","pensionAmount":31600,"bankServiceCharge":550}
+	 * @param token               {"aadhaarNumber":"123456789012","pensionAmount":31600,"bankServiceCharge":550}
+	 * @param processPensionInput
 	 * @return status code indicating whether the process was success or not
 	 */
 	@PostMapping("/processPension")

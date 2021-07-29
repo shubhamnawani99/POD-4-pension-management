@@ -10,6 +10,7 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   baseUrl: string = 'http://localhost:8081'
+  private isUserLoggedIn: boolean = false;
   private isUserValid: boolean = false;
 
   login(user: User): Observable<any> {
@@ -31,15 +32,17 @@ export class AuthService {
     localStorage.setItem('token', token);
   }
 
-  // method to check if token is valid
+ 
+
+
   isValid() {
     const token = this.getToken();
-    console.log(token);
     if (token == undefined || token == '' || token == null) {
       return false;
     }
     this.setValidity();
     return this.isUserValid;
+
   }
 
   setValidity(): Observable<boolean> {

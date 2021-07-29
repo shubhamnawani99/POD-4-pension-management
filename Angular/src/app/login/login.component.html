@@ -13,11 +13,9 @@
             <button class="btn btn-primary mt-3 mx-3">Login</button>
             <button type="reset" class="btn btn-secondary mt-3" (click)="handleReset()">Reset</button>
         </div>
-        <div class="error-div">
-            <h3 class="mt-3" [ngClass]="color">{{ msg }}</h3>
-            <div *ngFor='let error of fieldErrors' class="text-danger">
-                <p><strong>{{ error }}</strong></p>
-            </div>
+        <h3 class="mt-3" [ngClass]="color">{{ msg }}</h3>
+        <div *ngFor='let error of fieldErrors' class="text-danger">
+            <p><strong>{{ error }}</strong></p>
         </div>
     </form>
 </div>

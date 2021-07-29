@@ -18,6 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -65,28 +66,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * This will handle all Feign related Exception
 	 * 
-	 * @author Shubham Nawani, Anas Zubair
 	 * @param exception
 	 * @param response
 	 * @return ErrorResponse
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
 	 */
 	@ExceptionHandler(FeignException.class)
 	public ResponseEntity<ErrorResponse> handleFeignStatusException(FeignException exception,
 			HttpServletResponse response) {
-		log.error("Handling Feign Client in Process Pension Micro-service...");
-		log.debug("Message: {}", exception.getMessage());
 		ErrorResponse errorResponse;
-		log.debug("UTF-8 Message: {}", exception.contentUTF8());
-		if (exception.contentUTF8().isBlank()) {
-			errorResponse = new ErrorResponse("Invalid Request");
-		} else {
-			try {
-				log.debug("Trying...");
-				errorResponse = objectMapper.readValue(exception.contentUTF8(), ErrorResponse.class);
-			} catch (JsonProcessingException e) {
-				errorResponse = new ErrorResponse(exception.getCause().getMessage());
-				log.error("Processing Error {}", e.toString());
-			}
+		log.debug("Handling Feign Client");
+		log.debug(exception.getMessage());
+		try {
+			errorResponse = objectMapper.readValue(exception.contentUTF8(), ErrorResponse.class);
+		} catch (JsonProcessingException e) {
+			errorResponse = new ErrorResponse();
+			errorResponse.setMessage(exception.getCause().getMessage());
+			errorResponse.setTimestamp(LocalDateTime.now());
+			log.error(e.toString());
 		}
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}

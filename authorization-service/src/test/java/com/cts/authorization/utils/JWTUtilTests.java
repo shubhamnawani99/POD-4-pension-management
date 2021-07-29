@@ -102,7 +102,7 @@ class JWTUtilTests {
 
 		// generate our token
 		final String token = null;
-		log.info("Null Token: {}", token);
+		log.info("Expired Token: {}", token);
 
 		// Test the token validity
 		InvalidTokenException thrownException = assertThrows(InvalidTokenException.class, () -> jwtUtil.isTokenExpiredOrInvalidFormat(token));
@@ -121,7 +121,7 @@ class JWTUtilTests {
 
 		// generate our token
 		final String token = "eyJhbGciOiJIUzI1NiJ91.eyJpYXQiOjE2MjczMjA2ODIsInN1YiI6ImFkbWluMSIsImV4cCI6MTYyNzMyMDc0Mn0.tiQjNTsiLwo7Q2EyuJeV9p187jUZVr7PCTZMs9gvBgk";
-		log.info("Invalid token signature Token: {}", token);
+		log.info("Expired Token: {}", token);
 
 		// Test the token validity
 		InvalidTokenException thrownException = assertThrows(InvalidTokenException.class, () -> jwtUtil.isTokenExpiredOrInvalidFormat(token));
