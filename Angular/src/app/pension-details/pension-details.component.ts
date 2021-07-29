@@ -18,7 +18,7 @@ export class PensionDetailsComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  
+
   handleReset() {
     this.msg = ""
     this.fieldErrors = []
@@ -36,9 +36,14 @@ export class PensionDetailsComponent implements OnInit {
           this.msg = "The pension amount is " + this.pensionDetails.pensionAmount;
         },
         error => {
-          this.fieldErrors = error.error.fieldErrors;
+          try {
+            this.fieldErrors = JSON.parse(error.error).fieldErrors;
+          } catch (error) {
+            this.msg = "Service is down, please try again later..."
+            console.log(this.msg);
+          }
         }
       );
   }
-  
+
 }

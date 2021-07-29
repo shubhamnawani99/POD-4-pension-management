@@ -37,16 +37,16 @@ export class LoginComponent implements OnInit {
       .subscribe(
         // if login was successful
         data => {
-          this.msg = "User is logged in";
-          this.color = "text-info";
           this.authService.setSession(data);
           this.router.navigateByUrl("home");
         },
         // if login failed, display the error
         error => {
-          this.fieldErrors = JSON.parse(error.error).fieldErrors;
-          if(this.fieldErrors == null){
-            console.log("Service is down, please try again later...");
+          try {
+            this.fieldErrors = JSON.parse(error.error).fieldErrors;
+          } catch (error) {
+            this.msg = "Service is down, please try again later..."
+            console.log(this.msg);
           }
         }
       );

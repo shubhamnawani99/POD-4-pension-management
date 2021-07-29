@@ -14,12 +14,12 @@ export class AuthGuardService implements CanActivate {
 
   // activates for URL where authorization is required
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    console.log("Runninng AUTH GUARD..");
-    // if (!this.authService.isValid()) {
-    //   this.router.navigateByUrl("login");
-    // }
+    console.log("Runninng AUTHENTICAION GUARD..");
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigateByUrl("login");
+    }
     // if the user is valid, only then they can access the resources
-    return this.authService.isValid();
+    return this.authService.isLoggedIn();
   }
 
 }

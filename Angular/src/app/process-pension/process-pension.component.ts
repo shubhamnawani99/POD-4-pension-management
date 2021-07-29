@@ -18,13 +18,13 @@ export class ProcessPensionComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  
+
   handleReset() {
     this.msg = ""
     this.fieldErrors = []
   }
 
-  processPensionResponse  = new ProcessPensionResponse(21);
+  processPensionResponse = new ProcessPensionResponse(21);
   processPensionInput = new ProcessPensionInput("", 0, 0);
 
   handleProcessPensionInput() {
@@ -32,7 +32,7 @@ export class ProcessPensionComponent implements OnInit {
       .subscribe(
         data => {
           this.processPensionResponse = data
-          if(this.processPensionResponse.processPensionStatusCode == 10){
+          if (this.processPensionResponse.processPensionStatusCode == 10) {
             this.msg = "Pension disbursement Success"
             this.color = "text-info"
           }
@@ -43,7 +43,12 @@ export class ProcessPensionComponent implements OnInit {
           console.log(this.processPensionResponse);
         },
         error => {
-          this.fieldErrors = error.error.fieldErrors;
+          try {
+            this.fieldErrors = JSON.parse(error.error).fieldErrors;
+          } catch (error) {
+            this.msg = "Service is down, please try again later..."
+            console.log(this.msg);
+          }
         }
       );
   }

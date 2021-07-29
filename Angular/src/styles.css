@@ -1,1 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
+.outer-div {
+    background-color:darkblue;
+    color: white;
+    padding-top: 1.2rem;
+    padding-bottom: 1.2rem;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+}
+
+.text-error{
+    color: rgb(255, 0, 0);
+    font-weight: bold;
+    text-shadow: 2px 2px 2px black;
+}
+
+.main-head{
+    color: #007aff;
+    text-shadow: 2px 2px 2px antiquewhite;
+    margin-bottom: 0.3em;
+    font-weight: bolder;
+}

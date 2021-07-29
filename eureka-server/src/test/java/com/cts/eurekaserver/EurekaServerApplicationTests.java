@@ -8,6 +8,7 @@ class EurekaServerApplicationTests {
 
 	@Test
 	void contextLoads() {
+		EurekaServerApplication.main(new String[] {});
 	}
 
 }
