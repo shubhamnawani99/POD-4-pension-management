@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { PensionDetail } from 'src/app/models/pension-detail';
 import { PensionerInput } from 'src/app/models/pensioner-input';
 import { AuthService } from 'src/app/services/auth.service';
@@ -9,23 +10,19 @@ import { ProcessPensionService } from 'src/app/services/process-pension.service'
   templateUrl: './pension-details.component.html',
   styleUrls: ['./pension-details.component.css']
 })
+
 export class PensionDetailsComponent implements OnInit {
 
   constructor(
     private pservice: ProcessPensionService,
-    private authservice: AuthService
-  ) {
-    const currentYear = new Date().getFullYear();
-    this.minDate = new Date(currentYear - 20, 0, 1);
-    this.maxDate = new Date(currentYear + 1, 11, 31);
-  }
+    private authservice: AuthService,
+    private router: Router,
+  ) { }
 
   msg: string = ''
   color: String = ''
   fieldErrors: string[] = []
   types = ["Self", "Family"]
-  minDate: Date
-  maxDate: Date
 
   ngOnInit(): void {
   }
@@ -39,12 +36,14 @@ export class PensionDetailsComponent implements OnInit {
   pensionerInput = new PensionerInput("", new Date, "", "", "")
 
   handlePensionerInput() {
+    console.log(this.pensionerInput);
+
     this.pservice.getPensionDetails(this.pensionerInput)
       .subscribe(
         data => {
           this.color = "text-info"
           this.pensionDetails = data
-          this.msg = "The pension amount is " + this.pensionDetails.pensionAmount;
+          this.msg = "The pension amount is " + this.pensionDetails.pensionAmount + ". Please make a note of this";
         },
         error => {
           try {

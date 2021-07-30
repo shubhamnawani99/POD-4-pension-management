@@ -38,7 +38,6 @@ export class ProcessPensionComponent implements OnInit {
           this.processPensionResponse = data
           if (this.processPensionResponse.processPensionStatusCode == 10) {
             this.msg = "Pension disbursement Success"
-            this.color = "text-info"
           }
           else {
             this.msg = "Pension amount calculated is wrong, Please redo the calculation."
@@ -55,8 +54,15 @@ export class ProcessPensionComponent implements OnInit {
               this.logoutIfTokenExpired(this.fieldErrors[0])
             }
           } catch (e) {
-            // service is down if fieldErrors can't be parsed
-            this.msg = "Service is down, please try again later..."
+            // feign error if field error can't be parsed ...
+            var errorMsg = error.error.message;
+            console.log(errorMsg);
+            if (errorMsg.includes("Invalid")) {
+              this.msg = "Service is down, please try again later..."
+            } else {
+              this.msg = errorMsg
+            }
+            this.color = "text-danger"
             console.log(this.msg);
           }
         }

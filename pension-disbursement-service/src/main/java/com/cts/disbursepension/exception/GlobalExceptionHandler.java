@@ -59,20 +59,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return ErrorResponse
 	 */
 	@ExceptionHandler(FeignException.class)
-	public ResponseEntity<ErrorResponse> handleFeignStatusException(FeignException exception,
+	public ResponseEntity<ErrorResponseNoFieldErrors> handleFeignStatusException(FeignException exception,
 			HttpServletResponse response) {
 		log.debug("Handling Feign Client");
 		log.debug("Message: {}", exception.getMessage());
-		ErrorResponse errorResponse;
+		ErrorResponseNoFieldErrors errorResponse;
 		log.debug("UTF-8 Message: {}", exception.contentUTF8());
 		if (exception.contentUTF8().isBlank()) {
-			errorResponse = new ErrorResponse("Invalid Request");
+			errorResponse = new ErrorResponseNoFieldErrors("Invalid Request");
 		} else {
 			try {
 				log.debug("Trying...");
-				errorResponse = objectMapper.readValue(exception.contentUTF8(), ErrorResponse.class);
+				errorResponse = objectMapper.readValue(exception.contentUTF8(), ErrorResponseNoFieldErrors.class);
+				log.debug("Successful.. Message is: {}", errorResponse.getMessage());
 			} catch (JsonProcessingException e) {
-				errorResponse = new ErrorResponse(exception.getCause().getMessage());
+				errorResponse = new ErrorResponseNoFieldErrors(exception.getCause().getMessage());
 				log.error("Processing Error {}", e.toString());
 			}
 		}

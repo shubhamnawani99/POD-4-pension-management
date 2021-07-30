@@ -1,6 +1,6 @@
 <h2 class="text-center">Enter details to calculate the pension amount</h2>
-<div class="outer-div col-6 offset-3">
-    <form (ngSubmit)='handlePensionerInput()' #pensionForm='ngForm' class="px-3">
+<div class="outer-div col-lg-6 offset-lg-3">
+    <form #pensionForm='ngForm' (ngSubmit)='handlePensionerInput(); pensionForm.resetForm()' class="px-3">
         <div class="form-group">
             <label for="name"><strong>Name <span class="text-danger">*</span></strong></label>
             <input type="text" class="form-control mt-1" id="name" name="name" #name=ngModel
@@ -14,16 +14,10 @@
         </div> <!-- Name ends here -->
 
         <!-- DOB -->
-        <label for="dob"><strong>Date of Birth <span class="text-danger">*</span></strong></label>
-        <div class="input-group mt-2">
-            <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" name="dob" #dob=ngModel
-                class="form-control" [(ngModel)]='pensionerInput.dateOfBirth' required>
-            <span class="input-group-text" id="basic-addon">
-              
-                ok
-            </span>
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
+        <label for="dob" class="mt-2"><strong>Date of Birth <span class="text-danger">*</span></strong></label>
+        <div class="input-group mt-1">
+            <input type="date" name="dob" #dob=ngModel class="form-control date-input"
+                [(ngModel)]='pensionerInput.dateOfBirth' placeholder="DD/MM/YYYY" required>
             <!-- Validations -->
             <div *ngIf="dob.invalid && (dob.dirty || dob.touched)" class="text-error">
                 <div *ngIf="dob.errors?.required">
@@ -34,7 +28,7 @@
         <!-- DOB ends here -->
 
         <!-- PAN Card Number -->
-        <div class="mt-2">
+        <div class="form-group mt-2">
             <label for="pan"><strong>PAN Card Number <span class="text-danger">*</span></strong></label>
             <input type="text" class="form-control mt-1" id="pan" name="pan" #pan=ngModel
                 [(ngModel)]='pensionerInput.pan' pattern="^[A-Za-z0-9]{10}$"
@@ -48,9 +42,10 @@
                     * PAN Card format is incorrect
                 </div>
             </div>
-        </div>
+        </div> <!-- PAN ends here -->
 
-        <div class="mt-2">
+        <!-- Aadhaar Number -->
+        <div class="form-group mt-2">
             <label for="aadhaar-number"><strong>Aadhaar Number <span class="text-danger">*</span></strong></label>
             <input type="text" class="form-control mt-1" id="aadhaar-number" name="aadhaar" #aadhaar=ngModel
                 [(ngModel)]='pensionerInput.aadhaarNumber' pattern="^[0-9]{12}$"
@@ -64,27 +59,37 @@
                     * Aadhaar Number format is incorrect
                 </div>
             </div>
-        </div>
+        </div> <!-- Aadhaar ends here -->
 
-        <div class="mt-2 form-group">
+        <!-- Pension Type -->
+        <div class="form-group mt-2">
             <label for="p-type"><strong>Pension Type <span class="text-danger">*</span></strong></label>
             <select class="form-control mt-1" id="p-type" name="pension-type" #ptype=ngModel
-                [(ngModel)]='pensionerInput.pensionType'>
-                <option *ngFor="let type of types">{{type}}</option>
+                [(ngModel)]='pensionerInput.pensionType' required>
+                <option *ngFor="let type of types">{{ type }}</option>
             </select>
-        </div>
+            <!-- Validations -->
+            <div *ngIf="ptype.invalid && (ptype.dirty || ptype.touched)" class="text-error">
+                <div *ngIf="ptype.errors?.required">
+                    * Pension type is required
+                </div>
+            </div>
+        </div> <!-- Pension type ends here -->
 
-        <!-- Handle login and reset with error messages -->
+        <!-- Handle login and reset -->
         <div class="text-center">
             <button class="btn btn-primary mt-3 mx-3" [disabled]="!pensionForm.valid">Submit Details</button>
             <button type="reset" class="btn btn-secondary mt-3" (click)="handleReset()">Reset</button>
-        </div>
-        <div class="text-error text-center" (mouseleave)="handleReset()">
-            <div class="mt-3">{{ msg }}</div>
+        </div><!-- Login ends here -->
+
+        <!-- Error messages -->
+        <div class="text-error text-center mt-3" (mouseleave)="handleReset()">
             <div *ngFor='let error of fieldErrors'>
                 <p>{{ error }}</p>
             </div>
         </div>
-
-    </form>
+    </form> <!-- Form ends here -->
 </div>
+
+<!-- Success Message -->
+<h2 class="main-head mt-3 text-center" (mouseleave)="handleReset()">{{ msg }}</h2>

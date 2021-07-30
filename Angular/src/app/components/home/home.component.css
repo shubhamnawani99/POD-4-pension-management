@@ -15,27 +15,29 @@
     border-radius: 20px;
 }
 
-.outer-card-div{
+.outer-card-div {
     background-color: rgb(246, 238, 227);
     border-style: none;
 }
 
-.inner-card-div{
+.inner-card-div {
     padding-top: 0%;
     background-color: rgb(246, 238, 227);
     border-style: none;
 }
 
 #pension-amount {
-    height: 400px;
+    height: 25em;
     background-image: url("../../../assets/images/2.jpg");
-    background-position: 60% 30%;
-    background-size: 90%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
 }
 
 #process-pension {
-    height: 400px;
+    height: 25em;
     background-image: url("../../../assets/images/3.jpg");
-    background-position: 60% 30%;
-    background-size: 100%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
 }
