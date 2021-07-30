@@ -12,7 +12,7 @@ import lombok.Getter;
 /**
  * Class for customizing error response in exception handler
  * 
- * @author Shubham Nawani
+ * @author Sreekanth Gantela
  *
  */
 @Getter
