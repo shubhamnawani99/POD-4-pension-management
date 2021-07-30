@@ -1,6 +1,7 @@
 package com.cts.processPension.exception;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
+		log.error("Handling method argement not valid in Process pension microservice");
 		ErrorResponse response = new ErrorResponse();
 		response.setMessage("Invalid Credentials");
 		response.setTimestamp(LocalDateTime.now());
@@ -58,7 +60,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		// Add errors to the response map
 		response.setFieldErrors(errors);
-
+		log.error(errors.toString());
 		return new ResponseEntity<>(response, headers, status);
 	}
 
@@ -73,7 +75,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(FeignException.class)
 	public ResponseEntity<ErrorResponse> handleFeignStatusException(FeignException exception,
 			HttpServletResponse response) {
-		log.error("Handling Feign Client in Process Pension Micro-service...");
+		log.error("Handling Feign Client in Process Pension microservice...");
 		log.debug("Message: {}", exception.getMessage());
 		ErrorResponse errorResponse;
 		log.debug("UTF-8 Message: {}", exception.contentUTF8());
@@ -101,10 +103,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException exception,
 			HttpServletResponse response) {
-		log.debug("Handling Aadhaar Number not found exception");
+		log.error("Handling Details mismatch exception in Process Pension microservice");
 		ErrorResponse errorResponse = new ErrorResponse();
 		errorResponse.setMessage(exception.getMessage());
 		errorResponse.setTimestamp(LocalDateTime.now());
+		errorResponse.setFieldErrors(Collections.singletonList(exception.getMessage()));
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 
@@ -118,10 +121,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(InvalidTokenException.class)
 	public ResponseEntity<ErrorResponse> handleInvalidTokenException(InvalidTokenException exception,
 			HttpServletResponse response) {
-		log.debug("Handling Invalid Token exception");
+		log.error("Handling Invalid Token exception in Process Pension microservice");
 		ErrorResponse errorResponse = new ErrorResponse();
 		errorResponse.setMessage(exception.getMessage());
 		errorResponse.setTimestamp(LocalDateTime.now());
+		errorResponse.setFieldErrors(Collections.singletonList(exception.getMessage()));
 		return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
 	}
 

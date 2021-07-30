@@ -1,6 +1,9 @@
 
 package com.cts.disbursepension.exception;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +41,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		log.debug("Handling Argument not valid exception");
-		return new ResponseEntity<>(new ErrorResponse("Invalid Input"), headers, status);
+
+		log.debug("Handling Argument not valid exception in Disburse Pension Microservice");
+		// Get all validation errors
+		List<String> errors = exception.getBindingResult().getFieldErrors().stream().map(x -> x.getDefaultMessage())
+				.collect(Collectors.toList());
+		ErrorResponse errorResponse = new ErrorResponse("Invalid Credentials", errors);
+		return new ResponseEntity<>(errorResponse, headers, status);
 	}
 
 	/**

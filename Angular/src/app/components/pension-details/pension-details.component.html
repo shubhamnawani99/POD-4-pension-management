@@ -1,0 +1,90 @@
+<h2 class="text-center">Enter details to calculate the pension amount</h2>
+<div class="outer-div col-6 offset-3">
+    <form (ngSubmit)='handlePensionerInput()' #pensionForm='ngForm' class="px-3">
+        <div class="form-group">
+            <label for="name"><strong>Name <span class="text-danger">*</span></strong></label>
+            <input type="text" class="form-control mt-1" id="name" name="name" #name=ngModel
+                [(ngModel)]='pensionerInput.name' placeholder="Enter the pensioner name" required />
+        </div>
+        <!-- Validations -->
+        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-error">
+            <div *ngIf="name.errors?.required">
+                * Username is required
+            </div>
+        </div> <!-- Name ends here -->
+
+        <!-- DOB -->
+        <label for="dob"><strong>Date of Birth <span class="text-danger">*</span></strong></label>
+        <div class="input-group mt-2">
+            <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" name="dob" #dob=ngModel
+                class="form-control" [(ngModel)]='pensionerInput.dateOfBirth' required>
+            <span class="input-group-text" id="basic-addon">
+              
+                ok
+            </span>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <!-- Validations -->
+            <div *ngIf="dob.invalid && (dob.dirty || dob.touched)" class="text-error">
+                <div *ngIf="dob.errors?.required">
+                    * Date of Birth is required
+                </div>
+            </div>
+        </div>
+        <!-- DOB ends here -->
+
+        <!-- PAN Card Number -->
+        <div class="mt-2">
+            <label for="pan"><strong>PAN Card Number <span class="text-danger">*</span></strong></label>
+            <input type="text" class="form-control mt-1" id="pan" name="pan" #pan=ngModel
+                [(ngModel)]='pensionerInput.pan' pattern="^[A-Za-z0-9]{10}$"
+                placeholder="Enter the 10 digit PAN card number" required />
+            <!-- Validations -->
+            <div *ngIf="pan.invalid && (pan.dirty || pan.touched)" class="text-error">
+                <div *ngIf="pan.errors?.required">
+                    * PAN Card Number is required
+                </div>
+                <div *ngIf="pan.errors?.pattern">
+                    * PAN Card format is incorrect
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-2">
+            <label for="aadhaar-number"><strong>Aadhaar Number <span class="text-danger">*</span></strong></label>
+            <input type="text" class="form-control mt-1" id="aadhaar-number" name="aadhaar" #aadhaar=ngModel
+                [(ngModel)]='pensionerInput.aadhaarNumber' pattern="^[0-9]{12}$"
+                placeholder="Enter the 12 digit Aadhaar number" required />
+            <!-- Validations -->
+            <div *ngIf="aadhaar.invalid && (aadhaar.dirty || aadhaar.touched)" class="text-error">
+                <div *ngIf="aadhaar.errors?.required">
+                    * Aadhaar Number is required
+                </div>
+                <div *ngIf="aadhaar.errors?.pattern">
+                    * Aadhaar Number format is incorrect
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-2 form-group">
+            <label for="p-type"><strong>Pension Type <span class="text-danger">*</span></strong></label>
+            <select class="form-control mt-1" id="p-type" name="pension-type" #ptype=ngModel
+                [(ngModel)]='pensionerInput.pensionType'>
+                <option *ngFor="let type of types">{{type}}</option>
+            </select>
+        </div>
+
+        <!-- Handle login and reset with error messages -->
+        <div class="text-center">
+            <button class="btn btn-primary mt-3 mx-3" [disabled]="!pensionForm.valid">Submit Details</button>
+            <button type="reset" class="btn btn-secondary mt-3" (click)="handleReset()">Reset</button>
+        </div>
+        <div class="text-error text-center" (mouseleave)="handleReset()">
+            <div class="mt-3">{{ msg }}</div>
+            <div *ngFor='let error of fieldErrors'>
+                <p>{{ error }}</p>
+            </div>
+        </div>
+
+    </form>
+</div>

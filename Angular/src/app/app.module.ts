@@ -4,28 +4,31 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { HomeComponent } from './home/home.component';
-import { ProcessPensionComponent } from './process-pension/process-pension.component';
-import { AuthInterceptor } from './auth.interceptor';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { PensionDetailsComponent } from './pension-details/pension-details.component';
+import { LoginComponent } from './components/login/login.component';
+import { HomeComponent } from './components/home/home.component';
+import { PensionDetailsComponent } from './components/pension-details/pension-details.component';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { ProcessPensionComponent } from './components/process-pension/process-pension.component';
+import { AuthInterceptor } from './utils/auth.interceptor';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
+    PensionDetailsComponent,
     ProcessPensionComponent,
     PageNotFoundComponent,
-    PensionDetailsComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

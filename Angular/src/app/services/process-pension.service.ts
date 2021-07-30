@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { PensionDetail } from './pension-detail';
-import { PensionerInput } from './pensioner-input';
-import { ProcessPensionInput } from './process-pension-input';
-import { ProcessPensionResponse } from './process-pension-response';
+import { PensionDetail } from '../models/pension-detail';
+import { PensionerInput } from '../models/pensioner-input';
+import { ProcessPensionInput } from '../models/process-pension-input';
+import { ProcessPensionResponse } from '../models/process-pension-response';
 
 @Injectable({
   providedIn: 'root'

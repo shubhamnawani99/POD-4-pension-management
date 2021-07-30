@@ -3,9 +3,10 @@
     <div class="outer-div col-lg-6 offset-lg-3">
         <form (ngSubmit)='handleLogin()' #userForm='ngForm' class="px-3">
             <div class="form-group">
-                <label for=""><strong>Username <span class="text-danger">*</span></strong></label>
-                <input type="text" class="form-control" name="username" #username="ngModel"
-                    [(ngModel)]='userModel.username' minlength="4" maxlength="25" required />
+                <label for="username"><strong>Username <span class="text-danger">*</span></strong></label>
+                <input type="text" class="form-control mt-1" name="username" id="username" #username="ngModel"
+                    [(ngModel)]='userModel.username' minlength="4" maxlength="25" placeholder="Enter Username"
+                    required />
                 <!-- Validaitons -->
                 <div *ngIf="username.invalid && (username.dirty || username.touched)" class="text-error">
                     <div *ngIf="username.errors?.required">
@@ -21,9 +22,9 @@
             </div> <!-- Username ends here -->
 
             <div class="mt-2">
-                <label for=""><strong>Password <span class="text-danger">*</span></strong></label>
-                <input type="password" class="form-control" name="password" #password="ngModel"
-                    [(ngModel)]='userModel.password' required />
+                <label for="password"><strong>Password <span class="text-danger">*</span></strong></label>
+                <input type="password" class="form-control mt-1" name="password" id="password" #password="ngModel"
+                    [(ngModel)]='userModel.password' placeholder="Enter Password" required />
                 <!-- Validaitons -->
                 <div *ngIf="password.invalid && (password.dirty || password.touched)" class="text-error">
                     <div *ngIf="password.errors?.required">
@@ -32,6 +33,7 @@
                 </div>
             </div><!-- Password ends here -->
 
+            <!-- Handle login and reset with error messages -->
             <div class="text-center">
                 <button class="btn btn-primary mt-3 mx-3" [disabled]="!userForm.valid">Login</button>
                 <button type="reset" class="btn btn-secondary mt-3" (click)="handleReset()">Reset</button>

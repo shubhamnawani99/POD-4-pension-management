@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ProcessPensionInput } from '../process-pension-input';
-import { ProcessPensionResponse } from '../process-pension-response';
-import { ProcessPensionService } from '../process-pension.service';
+import { ProcessPensionInput } from 'src/app/models/process-pension-input';
+import { ProcessPensionResponse } from 'src/app/models/process-pension-response';
+import { AuthService } from 'src/app/services/auth.service';
+import { ProcessPensionService } from 'src/app/services/process-pension.service';
 
 @Component({
   selector: 'app-process-pension',
@@ -10,7 +11,10 @@ import { ProcessPensionService } from '../process-pension.service';
 })
 export class ProcessPensionComponent implements OnInit {
 
-  constructor(private pservice: ProcessPensionService) { }
+  constructor(
+    private pservice: ProcessPensionService,
+    private authservice: AuthService,
+  ) { }
 
   msg: string = ''
   color: String = ''
@@ -44,12 +48,25 @@ export class ProcessPensionComponent implements OnInit {
         },
         error => {
           try {
-            this.fieldErrors = JSON.parse(error.error).fieldErrors;
-          } catch (error) {
+            // get the errors thrown by the server
+            this.fieldErrors = error.error.fieldErrors;
+            console.log(this.fieldErrors);
+            if (this.fieldErrors.length == 1) {
+              this.logoutIfTokenExpired(this.fieldErrors[0])
+            }
+          } catch (e) {
+            // service is down if fieldErrors can't be parsed
             this.msg = "Service is down, please try again later..."
             console.log(this.msg);
           }
         }
       );
+  }
+
+  logoutIfTokenExpired(error: String) {
+    if (error.includes("expired")) {
+      alert("Your session has been expired... Logging out!");
+      this.authservice.logout();
+    }
   }
 }

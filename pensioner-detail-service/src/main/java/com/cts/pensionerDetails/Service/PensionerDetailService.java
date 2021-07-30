@@ -29,7 +29,7 @@ public class PensionerDetailService {
 
 	@Value("${errorMessage}")
 	private String AADHAAR_NUMBER_NOT_FOUND;
-	
+
 	/**
 	 * Loads pensioner from the details if it exists. After loading the details,
 	 * compares the given Aadhaar Number from the Details CSV Files.
@@ -47,13 +47,12 @@ public class PensionerDetailService {
 			{
 				// convert record into strings
 				String[] person = line.split(",");
-				// if aadhaar number is found, then return the details
+				// if Aadhaar number is found, then return the details
 				if (aadhaarNumber.contentEquals(person[0])) {
 					log.info("Details found");
-					PensionerDetails pensionerDetails = new PensionerDetails(person[1], DateUtil.parseDate(person[2]), person[3],
+					return new PensionerDetails(person[1], DateUtil.parseDate(person[2]), person[3],
 							Double.parseDouble(person[4]), Double.parseDouble(person[5]), person[6],
 							new BankDetails(person[7], Long.parseLong(person[8]), person[9]));
-					return pensionerDetails;
 				}
 			}
 		} catch (NumberFormatException | IOException | ParseException e) {
