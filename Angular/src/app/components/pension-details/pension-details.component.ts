@@ -41,9 +41,9 @@ export class PensionDetailsComponent implements OnInit {
     this.pservice.getPensionDetails(this.pensionerInput)
       .subscribe(
         data => {
-          this.color = "text-info"
+          this.color = "text-success"
           this.pensionDetails = data
-          this.msg = "The pension amount is " + this.pensionDetails.pensionAmount + ". Please make a note of this";
+          this.msg = "The pension amount is " + this.pensionDetails.pensionAmount + "\nPlease make a note of this";
         },
         error => {
           try {
@@ -54,8 +54,15 @@ export class PensionDetailsComponent implements OnInit {
               this.logoutIfTokenExpired(this.fieldErrors[0])
             }
           } catch (e) {
-            // service is down if fieldErrors can't be parsed
-            this.msg = "Service is down, please try again later..."
+            // feign error if field error can't be parsed ...
+            var errorMsg = error.error.message;
+            console.log(errorMsg);
+            if (errorMsg == undefined || errorMsg.includes("Invalid")) {
+              this.msg = "Service is down, please try again later..."
+            } else {
+              this.msg = errorMsg
+            }
+            this.color = "text-danger"
             console.log(this.msg);
           }
         }

@@ -14,7 +14,7 @@ export class AuthService {
   ) { }
 
   // set your base URL here
-  baseUrl: string = 'http://localhost:8081'
+  baseUrl: string = 'http:///localhost:8081'
 
   // hit the backend to login
   // returns error message for invalid login credentials

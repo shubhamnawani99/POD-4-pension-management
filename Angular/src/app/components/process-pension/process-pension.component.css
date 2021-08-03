@@ -7,3 +7,7 @@
     -moz-border-radius: 20px;
     border-radius: 20px;
 }
+
+.break-div{
+    white-space: pre-line;
+}
