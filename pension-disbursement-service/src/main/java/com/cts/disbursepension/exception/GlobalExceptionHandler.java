@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -44,7 +45,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		log.debug("Handling Argument not valid exception in Disburse Pension Microservice");
 		// Get all validation errors
-		List<String> errors = exception.getBindingResult().getFieldErrors().stream().map(x -> x.getDefaultMessage())
+		List<String> errors = exception.getBindingResult().getFieldErrors().stream().map(FieldError::getDefaultMessage)
 				.collect(Collectors.toList());
 		ErrorResponse errorResponse = new ErrorResponse("Invalid Credentials", errors);
 		return new ResponseEntity<>(errorResponse, headers, status);
@@ -66,14 +67,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		ErrorResponseNoFieldErrors errorResponse;
 		log.debug("UTF-8 Message: {}", exception.contentUTF8());
 		if (exception.contentUTF8().isBlank()) {
-			errorResponse = new ErrorResponseNoFieldErrors("Invalid Request");
+			//when feignClient request is timeout or service is unavailable
+			errorResponse = new ErrorResponseNoFieldErrors("Service is offline");
 		} else {
 			try {
+				//when error response has valid format
 				log.debug("Trying...");
 				errorResponse = objectMapper.readValue(exception.contentUTF8(), ErrorResponseNoFieldErrors.class);
 				log.debug("Successful.. Message is: {}", errorResponse.getMessage());
 			} catch (JsonProcessingException e) {
-				errorResponse = new ErrorResponseNoFieldErrors(exception.getCause().getMessage());
+				//Unknown error response
+				//Converting raw response to valid format
+				errorResponse = new ErrorResponseNoFieldErrors(exception.contentUTF8());
 				log.error("Processing Error {}", e.toString());
 			}
 		}
