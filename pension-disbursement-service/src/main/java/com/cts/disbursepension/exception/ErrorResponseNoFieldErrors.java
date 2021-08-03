@@ -13,7 +13,6 @@ import lombok.Setter;
  *
  */
 @Getter
-@Setter
 @AllArgsConstructor
 public class ErrorResponseNoFieldErrors {
 	private LocalDateTime timestamp;

@@ -66,14 +66,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		ErrorResponseNoFieldErrors errorResponse;
 		log.debug("UTF-8 Message: {}", exception.contentUTF8());
 		if (exception.contentUTF8().isBlank()) {
-			errorResponse = new ErrorResponseNoFieldErrors("Invalid Request");
+			//when feignClient request is timeout or service is unavailable
+			errorResponse = new ErrorResponseNoFieldErrors("Service is offline");
 		} else {
 			try {
 				log.debug("Trying...");
 				errorResponse = objectMapper.readValue(exception.contentUTF8(), ErrorResponseNoFieldErrors.class);
 				log.debug("Successful.. Message is: {}", errorResponse.getMessage());
 			} catch (JsonProcessingException e) {
-				errorResponse = new ErrorResponseNoFieldErrors(exception.getCause().getMessage());
+//				errorResponse = new ErrorResponseNoFieldErrors(exception.getCause().getMessage());
+				errorResponse = new ErrorResponseNoFieldErrors(exception.contentUTF8());
 				log.error("Processing Error {}", e.toString());
 			}
 		}

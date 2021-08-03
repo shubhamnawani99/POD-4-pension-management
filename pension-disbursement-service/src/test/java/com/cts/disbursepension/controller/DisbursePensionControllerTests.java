@@ -1,6 +1,7 @@
 package com.cts.disbursepension.controller;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -19,6 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.cts.disbursepension.exception.ErrorResponse;
 import com.cts.disbursepension.feign.AuthorisationClient;
 import com.cts.disbursepension.feign.PensionerDetailsClient;
 import com.cts.disbursepension.model.ProcessPensionInput;
@@ -74,6 +76,9 @@ class DisbursePensionControllerTests {
 		invalidProcessPensionInput.setPensionAmount(145000.0);
 		invalidProcessPensionInput.setBankServiceCharge(550);
 
+		// mock authorization microservice response
+		when(authorisationClient.validate(ArgumentMatchers.anyString())).thenReturn(true);
+
 	}
 
 	@Test
@@ -89,9 +94,6 @@ class DisbursePensionControllerTests {
 		// mock disbursePensionSerive response
 		when(disbursePensionService.verifyPension(ArgumentMatchers.any())).thenReturn(new ProcessPensionResponse(10));
 
-		// mock authorization microservice response
-		when(authorisationClient.validate(ArgumentMatchers.anyString())).thenReturn(true);
-
 		// performing test
 		mockMvc.perform(post("/DisbursePension").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
 				.header("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
@@ -105,9 +107,6 @@ class DisbursePensionControllerTests {
 
 		// mock disbursePensionSerive response
 		when(disbursePensionService.verifyPension(ArgumentMatchers.any())).thenReturn(new ProcessPensionResponse(21));
-
-		// mock authorization microservice response
-		when(authorisationClient.validate(ArgumentMatchers.anyString())).thenReturn(true);
 
 		// performing test
 		mockMvc.perform(post("/DisbursePension").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
@@ -123,7 +122,7 @@ class DisbursePensionControllerTests {
 		// mock authorization microservice response
 		when(authorisationClient.validate(ArgumentMatchers.anyString())).thenReturn(false);
 
-		//performing test
+		// performing test
 		mockMvc.perform(post("/DisbursePension").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
 				.content(objectMapper.writeValueAsString(invalidProcessPensionInput)).accept(MediaType.APPLICATION_JSON)
 				.header("Authorization", "user1")).andExpect(status().isForbidden());
@@ -131,30 +130,76 @@ class DisbursePensionControllerTests {
 
 	@Test
 	@DisplayName("Verify response for Invalid Aadhar Number")
-	void testDisbursePension_withInvalidAadhaar() throws JsonProcessingException, Exception  {
-		
-		// mock authorization microservice response
-		when(authorisationClient.validate(ArgumentMatchers.anyString())).thenReturn(true);
-		
-		//mock disbursePensionService verifyPension to throw FeignException
+	void testDisbursePension_withInvalidAadhaar() throws JsonProcessingException, Exception {
+
+		// mock disbursePensionService verifyPension to throw FeignException
 		when(disbursePensionService.verifyPension(ArgumentMatchers.any()))
 				.thenThrow(new FeignException.BadRequest("Aadhaar number not found",
+						Request.create(HttpMethod.GET, "", Collections.emptyMap(), null, null, null),
+						objectMapper.writeValueAsBytes(new ErrorResponse("Aadhaar number not found"))));
+
+		// performing test
+		mockMvc.perform(post("/DisbursePension").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+				.content(objectMapper.writeValueAsString(invalidProcessPensionInput)).accept(MediaType.APPLICATION_JSON)
+				.header("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.message", Matchers.equalTo("Aadhaar number not found")));
+
+	}
+
+	@Test
+	@DisplayName("Verify Response when required microservice is offline")
+	void testDisbursePension_whenServiceIsOffline() throws JsonProcessingException, Exception {
+
+		// mock disbursePensionService verifyPension to throw FeignException
+		when(disbursePensionService.verifyPension(ArgumentMatchers.any()))
+				.thenThrow(new FeignException.BadRequest("Service is offline",
 						Request.create(HttpMethod.GET, "", Collections.emptyMap(), null, null, null), null));
 
 		// performing test
 		mockMvc.perform(post("/DisbursePension").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
 				.content(objectMapper.writeValueAsString(invalidProcessPensionInput)).accept(MediaType.APPLICATION_JSON)
-				.header("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")).andExpect(status().isBadRequest());
-		
+				.header("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.message", Matchers.equalTo("Service is offline")));
+
+	}
+
+	@Test
+	@DisplayName("Verify Response when feign client returns valid error response")
+	void testDisbursePension_withValidFeignResponse() throws JsonProcessingException, Exception {
+		// mock disbursePensionService verifyPension to throw FeignException
+		when(disbursePensionService.verifyPension(ArgumentMatchers.any())).thenThrow(new FeignException.BadRequest(
+				"Service is offline", Request.create(HttpMethod.GET, "", Collections.emptyMap(), null, null, null),
+				objectMapper.writeValueAsBytes(new ErrorResponse("Internal Server Error"))));
+
+		// performing test
+		mockMvc.perform(post("/DisbursePension").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+				.content(objectMapper.writeValueAsString(invalidProcessPensionInput)).accept(MediaType.APPLICATION_JSON)
+				.header("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.message", Matchers.equalTo("Internal Server Error")));
+
+	}
+
+	@Test
+	@DisplayName("Verify Response when feign client returns invalid error response")
+	void testDisbursePension_withInvalidFeignResponse() throws JsonProcessingException, Exception {
+		// mock disbursePensionService verifyPension to throw FeignException
+		when(disbursePensionService.verifyPension(ArgumentMatchers.any())).thenThrow(new FeignException.BadRequest(
+				"Invalid Response", Request.create(HttpMethod.GET, "", Collections.emptyMap(), null, null, null),
+				"Unknown error response".getBytes()));
+
+		// performing test
+		mockMvc.perform(post("/DisbursePension").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+				.content(objectMapper.writeValueAsString(invalidProcessPensionInput)).accept(MediaType.APPLICATION_JSON)
+				.header("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.message", Matchers.equalTo("Unknown error response")));
+
 	}
 
 	@Test
 	@DisplayName("Verify response for Invalid Arguments")
 	void testDisbursePension_withInvalidArgument() throws Exception {
-		//mock authorization microservice response
-		when(authorisationClient.validate(ArgumentMatchers.anyString())).thenReturn(true);
 
-		//performing test
+		// performing test
 		mockMvc.perform(post("/DisbursePension").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
 				.content("{\"body\":\"invalid\"}").accept(MediaType.APPLICATION_JSON)
 				.header("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")).andExpect(status().isBadRequest());
