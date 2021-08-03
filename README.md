@@ -23,33 +23,48 @@ The Eureka Server is responsible for registering all the microservices together 
 This service is responsible to provide login access to the application and provide security to it with the help of stateless authentication using JWT Tokens.
 
 ### This service provides two controller END-POINTS:
+
 1. Open your spring boot application and run the service.
 2. Open your browser and head to this URL - http://localhost:8081/swagger-ui.html#/ this will redirect you to Swagger UI where you can test the service.
 3. Select the authorization controller header
 4. **Login functionality**
-	1. Select **login** POST method and click try it out
-	2. Then enter these **correct** username and password credentials as follows:
-      ```
-      { 
-        username: "admin1", 
-        password: "adminpass@1234"
-      }
-      ```
-	3. Then hit execute and you will see a JWT Token generated. Copy this token to be used in the next step.
-	4. For these **incorrect** credentials:     
-	  ```
-    { 
-        username: "admin123", 
-        password: "adminpass@1234"
-    }
-    ``` 
-    you would receive a message of `Incorrect username or password`
+* Select **login** POST method and click try it out
+* Then enter these **correct** username and password credentials as follows:
+
+```
+{
+  "username": "admin1",
+  "password": "adminpass@1234"
+}
+```
+
+* Then hit execute and you will see a JWT Token generated. Copy this token to be used in the next step.
+* For these **incorrect** credentials:  
+
+ ```
+{
+  "username": "admin123",
+  "password": "wrongpassword"
+}
+ ``` 
+ 
+**Response**
+
+```
+{
+  "message": "Incorrect Username or Password",
+  "timestamp": "2021-08-03T11:05:11.8077352",
+  "fieldErrors": [
+    "Incorrect Username or Password"
+  ]
+}
+```
 
 5. **Validation functionality**
-	1. Select **validation** POST method and click try it out
-	2. Then enter previously generated **valid** Token that you had copied into the Authorization header.
-	3. Then hit execute and you would see `true` in the response body.
-	4. If the token in **invalid** the application throws an appropriate error response related to either `Token expired`, `Token malformed` or `Token signature incorrect`.
+* Select **validation** POST method and click try it out
+* Then enter previously generated **valid** Token that you had copied into the Authorization header.
+* Then hit execute and you would see `true` in the response body.
+* If the token in **invalid** the application throws an appropriate error response related to either `Token expired`, `Token malformed` or `Token signature incorrect`.
 
 ## 3. Pensioner Detail Service
   
@@ -68,31 +83,38 @@ This service is responsible to provide login access to the application and provi
    **Endpoint**
    
       url- http://localhost:8083/pensionerDetailByAadhaar/123456789012 
-      This endpoint accept the user request and provides the Pensioner details
+      This endpoint accept the user request and provides the Pensioner details. Access this using the POSTMAN client
       
-      Valid Input
+      Input - Aadhaar Number => 123456789012
       
-            {
-              "name": "Achyuth",
-              "dateOfBirth": "1956-09-12",
-              "pan": "BHMER12436",
-              "salary": 27000.0,
-              "allowance": 10000.0,
-              "pensionType": "self",
-              "bank": {
-                "bankName": "ICICI",
-                "accountNumber": 12345678,
-                "bankType": "private"
-              }
-            }
-            
-        Invalid Input
+**Valid Response**
+      
+```
+{
+  "name": "Achyuth",
+  "dateOfBirth": "1956-09-12",
+  "pan": "BHMER12436",
+  "salary": 27000,
+  "allowance": 10000,
+  "pensionType": "self",
+  "bank": {
+    "bankName": "ICICI",
+    "accountNumber": 12345678,
+    "bankType": "private"
+  }
+}
+```
+**Invalid Response**
        
-          {
-            "message": "Aadhaar Number Not Found",
-            "timestamp": "2021-07-31T16:10:28.55679",
-            "status": "NOT_FOUND"
-           }
+```
+{
+  "message": "Aadhaar Number Not Found",
+  "timestamp": "2021-08-03T11:00:23.7960535",
+  "fieldErrors": [
+    "Aadhaar Number Not Found"
+  ]
+}
+```
         
 ## 4. Pension Disbursement Servicee
   
@@ -152,3 +174,166 @@ This endpoint only accept authenticated request so make sure that there is is va
     "timestamp": "2021-07-30T19:45:18.3272518"
 }
 ```
+     
+## 5. Process Pension Service
+* It takes in the pensioner detail like the name, aadhaar number, pan detail, self or family or both type of pension
+* Verifies if the pensioner detail is accurate by getting the data from PensionerDetail Microservice or not. 
+* If not, validation message `“Invalid pensioner detail provided, please provide valid detail.”`
+* If valid, then pension calculation is done and the pension detail is returned to the Web application to be displayed on the UI.
+
+### This service provides two controller end-points:
+
+1. Open your spring boot application and run the service.
+2. Open your browser and head to this URL - http://localhost:8082/swagger-ui.html#/ this will redirect you to Swagger UI where you can test the service.
+3. This endpoint only accept authenticated request so make sure that there is is valid token present in "Authentication" header. Use AUTH-SERVICE to generate tokens
+
+4. **Get Pension Details functionality**
+Select **/pensionerInput** POST method and click try it out
+**Valid Input**
+
+```
+{
+  "aadhaarNumber": "123456789012",
+  "dateOfBirth": "1956-09-12",
+  "name": "Achyuth",
+  "pan": "BHMER12436",
+  "pensionType": "self"
+}
+```
+
+**Response for valid input**
+
+```
+{
+  "name": "Achyuth",
+  "dateOfBirth": "12/09/1956",
+  "pan": "BHMER12436",
+  "pensionType": "self",
+  "pensionAmount": 31600
+}
+```
+
+**Invalid Input**
+
+```
+{
+  "aadhaarNumber": "123456789012",
+  "dateOfBirth": "1956-09-12",
+  "name": "Achyuth",
+  "pan": "BHMER12436",
+  "pensionType": "family"
+}
+```
+
+**Response for invalid input**
+
+```
+{
+  "message": "Details entered are incorrect",
+  "timestamp": "2021-08-03T10:50:58.1047198",
+  "fieldErrors": [
+    "Details entered are incorrect"
+  ]
+}
+```
+
+**Invalid Input - wrong Aadhaar number**
+
+```
+{
+  "aadhaarNumber": "223456789012",
+  "dateOfBirth": "1956-09-12",
+  "name": "Achyuth",
+  "pan": "BHMER12436",
+  "pensionType": "family"
+}
+```
+
+**Response for invalid input**
+
+```
+{
+  "message": "Aadhaar Number Not Found",
+  "timestamp": "2021-08-03T10:51:36.344356",
+  "fieldErrors": [
+    "Aadhaar Number Not Found"
+  ]
+}
+```
+
+**Response for expired token**
+
+```
+{
+  "message": "Token has been expired",
+  "timestamp": "2021-08-03T10:54:10.5174319",
+  "fieldErrors": [
+    "Token has been expired"
+  ]
+}
+```
+
+5. **Process Pension functionality**
+* Select **/processPension** POST method and click try it out
+* Status code of 10 for valid input and if the input has been processed by the disbursement microservice
+* Status code of 21 for invalid input where the service tries to send a request 2 more times to the disbursement service.
+
+
+**Valid Input**
+
+```
+{
+  "aadhaarNumber": "123456789012",
+  "bankServiceCharge": 550,
+  "pensionAmount": 31600
+}
+```
+
+**Response**
+
+```
+{
+  "processPensionStatusCode": 10
+}
+```
+
+**Invalid Input**
+
+```
+{
+  "aadhaarNumber": "123456789012",
+  "bankServiceCharge": 550,
+  "pensionAmount": 991600
+}
+```
+
+**Response**
+
+```
+{
+  "processPensionStatusCode": 21
+}
+```
+
+**Invalid Input - wrong aadhaar number**
+
+```
+{
+  "aadhaarNumber": "223456789012",
+  "bankServiceCharge": 550,
+  "pensionAmount": 31600
+}
+```
+
+**Response**
+
+```
+{
+  "message": "Aadhaar Number Not Found",
+  "timestamp": "2021-08-03T10:58:31.3557242"
+}
+```
+
+## 6. Pension Management Portal
+
+This is the front end made using Angular, open VS code and enter `ng serve` in the terminal to run the application at `http:\\localhost:4200`
