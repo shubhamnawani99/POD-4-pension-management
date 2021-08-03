@@ -47,6 +47,7 @@ public class ProcessPensionServiceImpl implements IProcessPensionService {
 	 * @param pensionerInput
 	 * @return Verified Pension Detail with pension amount
 	 */
+	@Override
 	public PensionDetail getPensionDetails(PensionerInput pensionerInput) {
 
 		// get the pensioner details from the detail micro-service
@@ -74,6 +75,7 @@ public class ProcessPensionServiceImpl implements IProcessPensionService {
 	 * @param Verified Pensioner Details
 	 * @return Pension Details with Pension amount
 	 */
+	@Override
 	public PensionDetail calculatePensionAmount(PensionerDetail pensionDetail) {
 		double pensionAmount = 0;
 		if (pensionDetail.getPensionType().equalsIgnoreCase("self"))
@@ -93,6 +95,7 @@ public class ProcessPensionServiceImpl implements IProcessPensionService {
 	 * @param PensionerDetail
 	 * @return true if details match, else false
 	 */
+	@Override
 	public boolean checkdetails(PensionerInput pensionerInput, PensionerDetail pensionerDetail) {
 		return (pensionerInput.getName().equalsIgnoreCase(pensionerDetail.getName())
 				&& (pensionerInput.getDateOfBirth().compareTo(pensionerDetail.getDateOfBirth()) == 0)
@@ -108,6 +111,7 @@ public class ProcessPensionServiceImpl implements IProcessPensionService {
 	 * @param processPensionInput Processing input given by user
 	 * @return status code: {10: Pension Disbursed, 21: Invalid Input}
 	 */
+	@Override
 	public ProcessPensionResponse processPension(String token, ProcessPensionInput processPensionInput) {
 		int hitCounter = 0;
 		ProcessPensionResponse pensionResponse = pensionDisbursementClient.disbursePension(token, processPensionInput);

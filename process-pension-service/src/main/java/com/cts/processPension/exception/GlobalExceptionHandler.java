@@ -85,8 +85,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			try {
 				log.debug("Trying...");
 				errorResponse = objectMapper.readValue(exception.contentUTF8(), ErrorResponse.class);
+				log.debug("Success in parsing the error...");
 			} catch (JsonProcessingException e) {
-				errorResponse = new ErrorResponse(exception.getCause().getMessage());
+				errorResponse = new ErrorResponse(exception.contentUTF8());
 				log.error("Processing Error {}", e.toString());
 			}
 		}

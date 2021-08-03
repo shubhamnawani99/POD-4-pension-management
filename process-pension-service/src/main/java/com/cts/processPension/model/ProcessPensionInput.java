@@ -22,6 +22,7 @@ import lombok.Setter;
 public class ProcessPensionInput {
 	
 	@ApiModelProperty(value = "Aadhaar Number")
+	@NotNull(message = "Aadhaar Number can not be blank")
 	@Pattern(regexp = "[0-9]{12}", message = "Aadhaar Number is Invalid")
 	private String aadhaarNumber;
 

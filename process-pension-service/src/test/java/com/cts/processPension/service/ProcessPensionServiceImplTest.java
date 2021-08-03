@@ -151,8 +151,8 @@ class ProcessPensionServiceImplTest {
 	 * @author Shubham Nawani
 	 * @throws ParseException
 	 */
-	@DisplayName("Method to test getPensionDetails() method")
 	@Test
+	@DisplayName("Method to test getPensionDetails() method")
 	void testGetPensionDetails_forSelf() throws ParseException {
 		PensionerInput pensionerInput = new PensionerInput("Shubham", DateUtil.parseDate("23-11-1996"), "ASDFG3456",
 				"123456789012", "self");
@@ -179,6 +179,7 @@ class ProcessPensionServiceImplTest {
 	 * @throws ParseException
 	 */
 	@Test
+	@DisplayName("Method to test testCheckDetails() method with incorrect Pensioner Input")
 	void testCheckDetails_incorrectPensionerInput() throws ParseException {
 		// name, DOB, pan, aadhaar, type
 		PensionerInput pensionerInput = new PensionerInput("Shubham", DateUtil.parseDate("23-11-1996"), "ASDFG3457",
@@ -205,6 +206,7 @@ class ProcessPensionServiceImplTest {
 	 * @throws Exception
 	 */
 	@Test
+	@DisplayName("Method to test testProcessPension() method with Valid Process Response")
 	void testProcessPension_withValidProcessResponse() throws Exception {
 		ProcessPensionInput processPensionInput = new ProcessPensionInput();
 		processPensionInput.setAadhaarNumber("123456789012");
@@ -225,6 +227,7 @@ class ProcessPensionServiceImplTest {
 	 * @throws Exception
 	 */
 	@Test
+	@DisplayName("Method to test testProcessPension() method with Invalid Process Response")
 	void testProcessPension_withInValidProcessResponse() throws Exception {
 		ProcessPensionInput processPensionInput = new ProcessPensionInput();
 		processPensionInput.setAadhaarNumber("123456789012");

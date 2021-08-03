@@ -55,13 +55,7 @@ export class PensionDetailsComponent implements OnInit {
             }
           } catch (e) {
             // feign error if field error can't be parsed ...
-            var errorMsg = error.error.message;
-            console.log(errorMsg);
-            if (errorMsg == undefined || errorMsg.includes("Invalid")) {
-              this.msg = "Service is down, please try again later..."
-            } else {
-              this.msg = errorMsg
-            }
+            this.msg = "Service is down, please try again later..."
             this.color = "text-danger"
             console.log(this.msg);
           }
