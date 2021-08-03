@@ -17,7 +17,7 @@ import com.cts.processPension.model.PensionDetail;
 import com.cts.processPension.model.PensionerInput;
 import com.cts.processPension.model.ProcessPensionInput;
 import com.cts.processPension.model.ProcessPensionResponse;
-import com.cts.processPension.service.ProcessPensionService;
+import com.cts.processPension.service.ProcessPensionServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProcessPensionController {
 
 	@Autowired
-	ProcessPensionService processPensionService;
+	ProcessPensionServiceImpl processPensionService;
 
 	@Autowired
 	AuthorisationClient authorisationClient;

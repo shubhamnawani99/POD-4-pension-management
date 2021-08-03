@@ -1,0 +1,29 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+      java: corretto11
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region $AWS_REGION)
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building java
+      - cd authorization-service
+      - mvn clean package
+      - echo Building the docker image
+      - docker build -t authorization-service .
+      - docker tag authorization-service 941516478045.dkr.ecr.$AWS_REGION.amazonaws.com/pod4-service-registry:authorization-service
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - docker push 941516478045.dkr.ecr.$AWS_REGION.amazonaws.com/pod4-service-registry:authorization-service
+      - echo Writing definition files
+      - printf '[{"name":"ij028-pod4-authorization-service-container","imageUri":"%s"}]' 941516478045.dkr.ecr.$AWS_REGION.amazonaws.com/pod4-service-registry:authorization-service > taskdefinition.json
+
+artifacts:
+  files: authorization-service/taskdefinition.json

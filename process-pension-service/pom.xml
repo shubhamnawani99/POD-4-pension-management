@@ -15,7 +15,7 @@
 	<name>process-pension-service</name>
 	<description>Process Pension Service</description>
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>11</java.version>
 		<spring-cloud.version>2020.0.0</spring-cloud.version>
 	</properties>
 	<dependencies>
@@ -98,6 +98,7 @@
 	</dependencyManagement>
 
 	<build>
+		<finalName>process-pension-service</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.cts.pensionerDetails.Exception.NotFoundException;
 import com.cts.pensionerDetails.Model.BankDetails;
 import com.cts.pensionerDetails.Model.PensionerDetails;
-import com.cts.pensionerDetails.Service.PensionerDetailService;
+import com.cts.pensionerDetails.Service.PensionerDetailServiceImpl;
 import com.cts.pensionerDetails.Util.DateUtil;
 
 /**
@@ -38,7 +38,7 @@ class PensionDetailsControllerTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private PensionerDetailService service;
+	private PensionerDetailServiceImpl service;
 	
 	/**
 	 * Test Case for test To Get Correct Pensioner Details From Controller

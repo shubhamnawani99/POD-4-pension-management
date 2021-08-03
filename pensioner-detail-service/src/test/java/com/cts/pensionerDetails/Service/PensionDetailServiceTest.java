@@ -30,7 +30,7 @@ import com.cts.pensionerDetails.Util.DateUtil;
 class PensionDetailServiceTest {
 
 	@Autowired
-	PensionerDetailService pds;
+	IPensionerDetailService pds;
 
 	@Value("${errorMessage}")
 	private String AADHAAR_NUMBER_NOT_FOUND;

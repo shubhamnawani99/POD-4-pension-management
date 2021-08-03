@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) {
 		Optional<User> userOptional = findByUsername(username);
-		if (userOptional.isEmpty()) {
+		if (!userOptional.isPresent()) {
 			throw new InvalidCredentialsException(USER_DOES_NOT_EXIST_MESSAGE);
 		} else {
 			log.info("Username: {} is valid", username);

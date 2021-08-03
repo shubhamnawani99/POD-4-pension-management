@@ -3,8 +3,13 @@ package com.cts.processPension.feign;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-
-@FeignClient(name = "authorization-service", url = "http://localhost:8081")
+/**
+ * Feign client to connect with authorization micro-service for token validation
+ * 
+ * @author Shubham Nawani
+ *
+ */
+@FeignClient("AUTH-SERVICE")
 public interface AuthorisationClient {
 	
 	/**

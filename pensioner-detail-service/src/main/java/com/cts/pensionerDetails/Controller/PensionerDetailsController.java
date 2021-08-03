@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cts.pensionerDetails.Model.PensionerDetails;
-import com.cts.pensionerDetails.Service.PensionerDetailService;
+import com.cts.pensionerDetails.Service.PensionerDetailServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PensionerDetailsController {
 
 	@Autowired
-	private PensionerDetailService pensionerDetailService;
+	private PensionerDetailServiceImpl pensionerDetailService;
 
 	/**
 	 * @URL: http://localhost:8083/pensionerDetailByAadhaar/123456789012

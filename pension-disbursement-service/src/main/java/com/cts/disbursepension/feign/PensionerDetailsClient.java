@@ -12,7 +12,7 @@ import com.cts.disbursepension.model.PensionerDetail;
  * @author Anas Zubair
  *
  */
-@FeignClient(name = "pensioner-detail-service", url = "http://localhost:8083/")
+@FeignClient("PENSIONER-DETAIL-SERVICE")
 public interface PensionerDetailsClient {
 	/**
 	 * method to get pensioner details by aadhaar number

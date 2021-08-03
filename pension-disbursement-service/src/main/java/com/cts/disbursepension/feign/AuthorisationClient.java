@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
  * @author Anas Zubair
  *
  */
-@FeignClient(name = "authorization-service", url = "http://localhost:8081")
+@FeignClient("AUTH-SERVICE")
 public interface AuthorisationClient {
 
 	/**

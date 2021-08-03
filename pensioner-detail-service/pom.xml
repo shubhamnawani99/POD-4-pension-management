@@ -15,11 +15,9 @@
 	<name>pensioner-detail-service</name>
 	<description>Pensioner Details Microservice</description>
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>11</java.version>
 		<spring-cloud.version>2020.0.1</spring-cloud.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
 		<junit.jupiter.version>5.5.2</junit.jupiter.version>
 		<junit.platform.version>1.5.2</junit.platform.version>
 	</properties>
@@ -96,6 +94,7 @@
 	</dependencies>
 
 	<build>
+	<finalName>pensioner-detail-service</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

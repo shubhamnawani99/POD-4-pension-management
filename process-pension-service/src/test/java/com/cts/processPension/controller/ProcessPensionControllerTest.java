@@ -26,7 +26,7 @@ import com.cts.processPension.model.PensionDetail;
 import com.cts.processPension.model.PensionerInput;
 import com.cts.processPension.model.ProcessPensionInput;
 import com.cts.processPension.model.ProcessPensionResponse;
-import com.cts.processPension.service.ProcessPensionService;
+import com.cts.processPension.service.ProcessPensionServiceImpl;
 import com.cts.processPension.util.DateUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -53,7 +53,7 @@ class ProcessPensionControllerTest {
 	private PensionDisbursementClient pensionDisbursementClient;
 
 	@MockBean
-	private ProcessPensionService processPensionService;
+	private ProcessPensionServiceImpl processPensionService;
 
 	@Autowired
 	private ObjectMapper objectMapper;
